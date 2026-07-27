@@ -1,0 +1,28 @@
+# Windows
+Thumbs.db
+Desktop.ini
+
+# VS Code
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+
+# OS files
+.DS_Store
+
+# Azure CLI local files
+.azure/
+
+# Draw.io autosave
+*.drawio.bkp
+
+# Backup files
+*.bak
