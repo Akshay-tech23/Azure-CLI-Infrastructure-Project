@@ -1,4 +1,4 @@
-# Day 02 Resources
+# Resources
 
 ## Azure Resources
 
@@ -7,7 +7,7 @@
 - Subnet
 - Network Security Group
 
-## Azure CLI
+## Azure CLI Commands
 
 - az network vnet create
 - az network vnet subnet create

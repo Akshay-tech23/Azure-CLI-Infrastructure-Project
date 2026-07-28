@@ -47,18 +47,17 @@ Azure-CLI-Infrastructure-Project
 ## Learning Progress
 
 | Day | Topic | Status |
-|-----|-------|--------|
-| Day 01 | Azure CLI Foundations & Resource Management | ✅ Completed |
-| Day 02 | Azure Networking | ⏳ Pending |
-| Day 03 | Virtual Machines | ⏳ Pending |
-| Day 04 | Azure Storage | ⏳ Pending |
-| Day 05 | Managed Disks | ⏳ Pending |
-| Day 06 | VM Administration | ⏳ Pending |
-| Day 07 | Azure Monitor | ⏳ Pending |
-| Day 08 | Security & Governance | ⏳ Pending |
-| Day 09 | End-to-End CLI Challenge | ⏳ Pending |
-| Day 10 | Final Project & Documentation | ⏳ Pending |
-
+|-----|-------------------------------|--------|
+| Day 1 | Resource Groups | ✅ Completed |
+| Day 2 | Virtual Network & NSG | ✅ Completed |
+| Day 3 | Virtual Machines | ⏳ Pending |
+| Day 4 | Azure Storage | ⏳ Pending |
+| Day 5 | Managed Disks | ⏳ Pending |
+| Day 6 | Monitoring | ⏳ Pending |
+| Day 7 | Azure Identity | ⏳ Pending |
+| Day 8 | Azure Backup | ⏳ Pending |
+| Day 9 | Automation | ⏳ Pending |
+| Day 10 | Final Project | ⏳ Pending |
 ---
 
 ## Current Project Status

@@ -1,23 +1,19 @@
-# Day 01 Architecture
+## Day 02
 
-## Objective
-
-Establish the Azure management boundary for the project by creating the Resource Group that will contain all infrastructure built during the bootcamp.
-
-## Active Components
-
-- Azure Subscription
-- Resource Group (rg-az104-training)
-
-## Future Components
-
-The following resources will be added in later days:
-
-- Virtual Network
-- Network Security Group
-- Public IP
-- Ubuntu Virtual Machine
-- Managed Disk
-- Storage Account
-- Azure Monitor
-
+```text
+rg-az104-training
+│
+└── vnet-az104-training (10.0.0.0/16)
+    │
+    ├── subnet-frontend (10.0.1.0/24)
+    │      │
+    │      ▼
+    │   nsg-az104-training
+    │      │
+    │      ├── Allow-SSH
+    │      ├── AllowVnetInBound
+    │      ├── AllowAzureLoadBalancerInBound
+    │      └── DenyAllInBound
+    │
+    └── subnet-backend (10.0.2.0/24)
+```
