@@ -1,43 +1,94 @@
 #!/bin/bash
 
-# ===========================================
-# AZ-104 Training
-# Day 04 - Linux VM Administration
-# ===========================================
+# ============================================================
+# Azure Administrator Bootcamp
+# Day 04 - Azure CLI Automation Script
+# Project: Azure-CLI-Infrastructure-Project
+# ============================================================
 
-# Get VM IP Address
+# -----------------------------
+# Variables
+# -----------------------------
 
-az vm list-ip-addresses \
-  --resource-group rg-az104-training \
-  --name vm-linux-01 \
-  --output table
+RESOURCE_GROUP="rg-az104-training"
+VM_NAME="vm-linux-01"
+NSG_NAME="vm-linux-01NSG"
+HTTP_RULE_NAME="Allow-HTTP"
 
-# View Configured SSH Key
+echo "==============================================="
+echo "Day 04 - Azure Administrator Automation Script"
+echo "==============================================="
+
+# -----------------------------
+# Display VM Public IP
+# -----------------------------
+
+echo ""
+echo "Retrieving VM Public IP..."
 
 az vm show \
-  --resource-group rg-az104-training \
-  --name vm-linux-01 \
-  --query "osProfile.linuxConfiguration.ssh.publicKeys"
+  --resource-group $RESOURCE_GROUP \
+  --name $VM_NAME \
+  --show-details \
+  --query publicIps \
+  --output tsv
 
-# Generate SSH Key
+# -----------------------------
+# List Existing NSG Rules
+# -----------------------------
 
-ssh-keygen \
-  -t ed25519 \
-  -f ~/.ssh/id_ed25519 \
-  -C "az104-day4"
+echo ""
+echo "Current NSG Rules..."
 
-# Display Public Key
+az network nsg rule list \
+  --resource-group $RESOURCE_GROUP \
+  --nsg-name $NSG_NAME \
+  --output table
 
-cat ~/.ssh/id_ed25519.pub
+# -----------------------------
+# Create HTTP Rule
+# -----------------------------
 
-# Reset SSH Public Key
+echo ""
+echo "Creating HTTP Rule..."
 
-az vm user update \
-  --resource-group rg-az104-training \
-  --name vm-linux-01 \
-  --username azureuser \
-  --ssh-key-value "$(cat ~/.ssh/id_ed25519.pub)"
+az network nsg rule create \
+  --resource-group $RESOURCE_GROUP \
+  --nsg-name $NSG_NAME \
+  --name $HTTP_RULE_NAME \
+  --priority 1100 \
+  --direction Inbound \
+  --access Allow \
+  --protocol Tcp \
+  --source-address-prefixes "*" \
+  --source-port-ranges "*" \
+  --destination-address-prefixes "*" \
+  --destination-port-ranges 80
 
-# Connect to VM
+# -----------------------------
+# Verify HTTP Rule
+# -----------------------------
 
-ssh -i ~/.ssh/id_ed25519 azureuser@<Public-IP>
+echo ""
+echo "Verifying NSG Rules..."
+
+az network nsg rule list \
+  --resource-group $RESOURCE_GROUP \
+  --nsg-name $NSG_NAME \
+  --output table
+
+# -----------------------------
+# Display Effective NSG
+# -----------------------------
+
+echo ""
+echo "Displaying Effective NSG..."
+
+az network nic list-effective-nsg \
+  --resource-group $RESOURCE_GROUP \
+  --name vm-linux-01VMNic
+
+echo ""
+echo "==============================================="
+echo "Day 04 Azure CLI Tasks Completed Successfully"
+echo "==============================================="

@@ -1,134 +1,255 @@
-# Day 04 – Connect and Administer Azure Linux Virtual Machine
+# Day 04 - Linux Administration and Nginx Web Server Deployment
 
 ## Objective
 
-Connect securely to an Azure Linux Virtual Machine using SSH, verify the operating system, understand the Linux file system hierarchy, and learn how to recover SSH access using Azure CLI.
+The objective of this lab is to learn Linux administration on an Azure Virtual Machine, understand SSH authentication, perform package management, install and manage a production web server using Nginx, configure Azure Network Security Groups (NSGs), and verify end-to-end connectivity from the Internet.
 
 ---
 
-## Prerequisites
+# Lab Environment
 
-- Azure for Students Subscription
-- Ubuntu 24.04 Virtual Machine
-- Azure Cloud Shell
-- Azure CLI
+| Property | Value |
+|----------|-------|
+| Subscription | Azure for Students |
+| Region | Central India |
+| Resource Group | rg-az104-training |
+| Virtual Machine | vm-linux-01 |
+| Operating System | Ubuntu Server 24.04 LTS |
+| VM Size | Standard_B2s_v2 |
+| Virtual Network | vnet-az104-training |
+| Backend Subnet | 10.0.2.0/24 |
 
 ---
 
-## Lab 1 – Verify VM Network
+# Prerequisites
+
+- Azure Virtual Machine deployed
+- SSH key pair generated
+- SSH access verified
+- Azure CLI available through Azure Cloud Shell
+
+---
+
+# Lab Tasks
+
+## Task 1 – Connect to the Linux VM
+
+Connected securely using SSH.
 
 ```bash
-az vm list-ip-addresses \
+ssh -i ~/.ssh/id_ed25519 azureuser@98.70.41.38
+```
+
+### Verification
+
+- Connected successfully
+- Login authenticated using SSH private key
+
+---
+
+## Task 2 – Update Package Repository
+
+Updated the local package index.
+
+```bash
+sudo apt update
+```
+
+Purpose:
+
+- Synchronize package metadata
+- Retrieve latest package information
+- Prepare the system for updates
+
+---
+
+## Task 3 – Review Available Updates
+
+Checked available package updates.
+
+```bash
+apt list --upgradable
+```
+
+Packages identified:
+
+- distro-info-data
+- tzdata
+- tzdata-legacy
+
+---
+
+## Task 4 – Upgrade Packages
+
+Installed available updates.
+
+```bash
+sudo apt upgrade -y
+```
+
+Observations:
+
+- Package upgrade completed successfully.
+- Pending kernel upgrade detected.
+- System reboot recommended but deferred.
+
+---
+
+## Task 5 – Install Nginx
+
+Installed the Nginx web server.
+
+```bash
+sudo apt install nginx -y
+```
+
+Result:
+
+- nginx installed successfully
+- nginx.service created
+- Automatic startup enabled
+
+---
+
+## Task 6 – Verify Nginx Service
+
+Verified service status.
+
+```bash
+systemctl status nginx
+```
+
+Observed:
+
+- Active (running)
+- Loaded
+- Enabled
+
+Verified startup configuration.
+
+```bash
+systemctl is-enabled nginx
+```
+
+Result
+
+```
+enabled
+```
+
+---
+
+## Task 7 – Verify Listening Port
+
+Verified that Nginx was listening on TCP Port 80.
+
+```bash
+ss -tuln | grep :80
+```
+
+Observed
+
+```
+tcp LISTEN 0 511 0.0.0.0:80
+tcp LISTEN 0 511 [::]:80
+```
+
+---
+
+## Task 8 – Local Web Server Verification
+
+Verified the web server locally.
+
+```bash
+curl http://localhost
+```
+
+Result
+
+Returned the default Nginx welcome page.
+
+---
+
+## Task 9 – Configure Azure NSG
+
+Created an inbound HTTP rule.
+
+```bash
+az network nsg rule create \
   --resource-group rg-az104-training \
-  --name vm-linux-01 \
-  --output table
+  --nsg-name vm-linux-01NSG \
+  --name Allow-HTTP \
+  --priority 1100 \
+  --direction Inbound \
+  --access Allow \
+  --protocol Tcp \
+  --destination-port-ranges 80
 ```
 
-Verified the VM public IP address.
-
----
-
-## Lab 2 – Connect Using SSH
-
-Initial connection attempt:
-
-```bash
-ssh azureuser@<Public-IP>
-```
-
-Connection failed with:
+Provisioning State
 
 ```
-Permission denied (publickey)
+Succeeded
 ```
 
 ---
 
-## Lab 3 – Troubleshoot SSH Authentication
+## Task 10 – Verify Public Access
 
-Verified configured SSH key:
+Retrieved VM Public IP.
 
 ```bash
 az vm show \
-  --resource-group rg-az104-training \
-  --name vm-linux-01 \
-  --query "osProfile.linuxConfiguration.ssh.publicKeys"
+--resource-group rg-az104-training \
+--name vm-linux-01 \
+--show-details \
+--query publicIps \
+--output tsv
 ```
 
-Generated a new SSH key pair:
+Output
 
-```bash
-ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -C "az104-day4"
+```
+98.70.41.38
 ```
 
-Updated the VM SSH key:
+Opened
 
-```bash
-az vm user update \
-  --resource-group rg-az104-training \
-  --name vm-linux-01 \
-  --username azureuser \
-  --ssh-key-value "$(cat ~/.ssh/id_ed25519.pub)"
+```
+http://98.70.41.38
 ```
 
-Connected successfully:
+Result
 
-```bash
-ssh -i ~/.ssh/id_ed25519 azureuser@<Public-IP>
-```
+Successfully displayed the default **Welcome to nginx!** page.
 
 ---
 
-## Lab 4 – Verify Linux System
+# Lab Outcome
 
-Executed:
+Successfully deployed a production-ready Linux web server on Azure.
 
-```bash
-whoami
-hostname
-pwd
-cat /etc/os-release
-uname -a
-id
-date
-uptime
-ls -la
-```
+Validated
 
----
-
-## Lab 5 – Explore Linux File System
-
-Visited directories:
-
-```
-/
-```
-
-```
-/home
-```
-
-```
-/etc
-```
-
-```
-/var/log
-```
-
-```
-/tmp
-```
-
-Returned to:
-
-```
-~
-```
+- SSH Connectivity
+- Linux Administration
+- Package Management
+- Nginx Installation
+- Service Management
+- Azure NSG Configuration
+- HTTP Connectivity
+- End-to-End Browser Verification
 
 ---
 
-## Result
+# Skills Learned
 
-Successfully connected to the Azure Linux VM, recovered SSH access using Azure CLI, verified the operating system, and explored the Linux file system.
+- Linux administration
+- SSH authentication
+- Package management
+- Service management using systemd
+- Nginx deployment
+- Azure NSG management
+- Azure CLI administration
+- End-to-end infrastructure validation
+- Azure troubleshooting methodology
