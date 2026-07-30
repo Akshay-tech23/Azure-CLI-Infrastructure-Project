@@ -51,7 +51,7 @@ Azure-CLI-Infrastructure-Project
 | Day 1 | Resource Groups | ✅ Completed |
 | Day 2 | Virtual Network & NSG | ✅ Completed |
 | Day 3 | Virtual Machines | ✅ Completed |
-| Day 4 | Azure Storage | ⏳ Pending |
+| Day 4 | Azure Storage | ✅ Completed  |
 | Day 5 | Managed Disks | ⏳ Pending |
 | Day 6 | Monitoring | ⏳ Pending |
 | Day 7 | Azure Identity | ⏳ Pending |
@@ -67,6 +67,8 @@ Azure-CLI-Infrastructure-Project
 ✅ Day 2 Completed
 
 ✅ Day 3 Completed
+
+✅ Day 4 Completed
 
 ---
 
