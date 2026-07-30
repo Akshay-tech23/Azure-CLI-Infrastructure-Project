@@ -1,53 +1,74 @@
-# Day 01 Architecture
+# Daily Progress
 
-## Objective
+## ✅ Day 01
 
-Establish the Azure management boundary for the project by creating the Resource Group that will contain all infrastructure built during the bootcamp.
+- Azure Resource Groups
+- Azure CLI Basics
 
-## Active Components
+---
 
-- Azure Subscription
-- Resource Group (rg-az104-training)
+## ✅ Day 02
 
-## Future Components
-
-The following resources will be added in later days:
+### Completed
 
 - Virtual Network
+- Frontend Subnet
+- Backend Subnet
 - Network Security Group
-- Public IP
-- Ubuntu Virtual Machine
-- Managed Disk
-- Storage Account
-- Azure Monitor
+- NSG Rules
 
-# Day 02
+### Outcome
 
-## Date
+Successfully deployed and verified the Azure networking infrastructure.
 
-26 July 2026
+---
 
-## Topics Completed
+## ✅ Day 03
 
-- Virtual Network
-- Address Space
-- CIDR
-- Subnets
-- Azure Reserved IP Addresses
-- Network Security Groups
-- Default NSG Rules
-- Custom NSG Rules
-- NSG Association
+### Completed
 
-## Practical Tasks
+- Linux Virtual Machine
+- Ubuntu 24.04
+- Availability Zone
+- SSH Key Authentication
+- VM Verification
 
-- Created Virtual Network
-- Created Frontend Subnet
-- Created Backend Subnet
-- Created Network Security Group
-- Created Allow-SSH Rule
-- Associated NSG with Frontend Subnet
+### Challenges
 
-## Status
+- Resolved `SkuNotAvailable` by deploying in Availability Zone 1.
 
-✅ Completed
+---
+
+## ✅ Day 04
+
+### Completed
+
+- SSH Authentication
+- SSH Key Recovery
+- Linux System Information
+- Linux Directory Structure
+- Azure VM Administration
+
+### Challenges
+
+- Recovered VM access using `az vm user update`.
+- Learned Cloud Shell ephemeral storage behavior.
+
+---
+
+## Overall Progress
+
+| Module | Status |
+|---------|--------|
+| Azure CLI | ✅ |
+| Resource Groups | ✅ |
+| Virtual Networks | ✅ |
+| Network Security Groups | ✅ |
+| Linux Virtual Machines | ✅ |
+| SSH Administration | ✅ |
+| Managed Disks | ⏳ |
+| Storage | ⏳ |
+| Monitoring | ⏳ |
+| Backup | ⏳ |
+
+**Progress:** 4 / 10 Days Completed
