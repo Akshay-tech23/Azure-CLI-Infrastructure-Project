@@ -417,3 +417,135 @@ Azure-CLI-Infrastructure-Project/
 | Lab Guides | labs/ |
 | Automation Scripts | scripts/azure-cli/ |
 | Screenshots | screenshots/ |
+
+# Day 05 – Identity and Access Management Resources
+
+## Azure CLI Commands
+
+### Subscription Management
+
+```bash
+# Display current subscription
+az account show --output table
+
+# List available tenants
+az account tenant list --output table
+
+# Display signed-in user
+az account show --query user --output table
+```
+
+### Microsoft Entra ID
+
+```bash
+# List users
+az ad user list --output table
+
+# List groups
+az ad group list --output table
+```
+
+### Azure RBAC
+
+```bash
+# List built-in role definitions
+az role definition list \
+  --query "[?roleType=='BuiltInRole'].{RoleName:roleName,Description:description}" \
+  --output table
+
+# View role assignments
+az role assignment list \
+  --assignee "<user-principal-name>" \
+  --all \
+  --output table
+```
+
+### Managed Identity
+
+```bash
+# Enable System Assigned Managed Identity
+az vm identity assign \
+  --resource-group rg-az104-training \
+  --name vm-linux-01
+
+# Verify Managed Identity
+az vm show \
+  --resource-group rg-az104-training \
+  --name vm-linux-01 \
+  --query identity \
+  --output json
+```
+
+---
+
+# Important Concepts
+
+* Microsoft Entra ID
+* Authentication
+* Authorization
+* Azure RBAC
+* Role Definition
+* Role Assignment
+* RBAC Scope
+* System Assigned Managed Identity
+* User Assigned Managed Identity
+* Principle of Least Privilege
+
+---
+
+# Best Practices
+
+* Always verify the active subscription before making changes.
+* Confirm the authenticated identity before executing administrative commands.
+* Assign Azure RBAC roles to groups instead of individual users whenever possible.
+* Grant only the minimum permissions required.
+* Use Managed Identities instead of storing credentials in applications or virtual machines.
+* Validate every infrastructure change after deployment.
+
+---
+
+# Microsoft Learn References
+
+* AZ-104 Learning Path
+  https://learn.microsoft.com/training/paths/az-104-administrator-prerequisites/
+
+* Microsoft Entra ID Documentation
+  https://learn.microsoft.com/entra/
+
+* Azure RBAC Documentation
+  https://learn.microsoft.com/azure/role-based-access-control/
+
+* Managed Identity Documentation
+  https://learn.microsoft.com/azure/active-directory/managed-identities-azure-resources/
+
+* Azure CLI Documentation
+  https://learn.microsoft.com/cli/azure/
+
+## ✅ Day 05 Documentation Status
+
+| Document                      | Status                              |
+| ----------------------------- | ----------------------------------- |
+| `labs/Day-05/Lab.md`          | ✅                                   |
+| `labs/Day-05/Notes.md`        | ✅                                   |
+| `labs/Day-05/Verification.md` | ✅                                   |
+| `labs/Day-05/Resources.md`    | ✅                                   |
+| `scripts/azure-cli/Day-05.sh` | ✅                                   |
+| `docs/Architecture.md`        | ✅                                   |
+| `docs/Daily-Progress.md`      | ✅                                   |
+| `docs/Resources.md`           | ✅                                   |
+| `README.md`                   | ✅                                   |
+| `Troubleshooting.md`          | Not Updated (No issues encountered) |
+
+**Day 05 is now fully completed** with enterprise-quality documentation and is ready to commit:
+
+```bash
+git status
+
+git add .
+
+git commit -m "Day 05 - Identity and Access Management with Managed Identity"
+
+git push origin main
+```
+
+From Day 06 onward, I'll maintain this concise documentation style while keeping it professional and portfolio-ready.

@@ -272,3 +272,127 @@ The following Azure services will be integrated in later phases of the project:
 - Azure Load Balancer
 
 These additions will extend the environment into a production-style Azure administration lab.
+
+
+## Project Information
+
+| Property       | Value                                   |
+| -------------- | --------------------------------------- |
+| Project        | Azure CLI Infrastructure Project        |
+| Subscription   | Azure for Students                      |
+| Region         | Central India                           |
+| Resource Group | `rg-az104-training`                     |
+| Current Phase  | Day 05 – Identity and Access Management |
+
+---
+
+# Infrastructure Overview
+
+```text
+Azure Subscription (Azure for Students)
+│
+└── Resource Group
+    └── rg-az104-training
+        │
+        ├── Virtual Network
+        │   └── vnet-az104-training
+        │       ├── Address Space : 10.0.0.0/16
+        │       ├── Frontend Subnet : 10.0.1.0/24
+        │       └── Backend Subnet  : 10.0.2.0/24
+        │
+        ├── Network Security Group
+        │   └── vm-linux-01NSG
+        │       ├── Allow SSH (22)
+        │       └── Allow HTTP (80)
+        │
+        ├── Linux Virtual Machine
+        │   └── vm-linux-01
+        │       ├── Ubuntu Server 24.04 LTS
+        │       ├── Size : Standard_B2s_v2
+        │       ├── Availability Zone : Zone 1
+        │       ├── Private IP : 10.0.2.4
+        │       ├── Public IP : 98.70.41.38
+        │       ├── SSH Key Authentication
+        │       ├── Nginx Web Server
+        │       ├── OS Disk (30 GB)
+        │       ├── Data Disk (16 GB)
+        │       │   └── Mounted at /data
+        │       └── System Assigned Managed Identity
+        │
+        └── Microsoft Entra ID
+            └── Managed Identity
+                ├── Type : System Assigned
+                ├── Principal ID :
+                │   5cd94e29-8c3a-4124-a17d-44f815094dc6
+                └── Tenant ID :
+                    7f9379f6-3f68-4925-9d9e-ebd4ab9301cc
+```
+
+---
+
+# Current Infrastructure Status
+
+| Resource                         | Status       |
+| -------------------------------- | ------------ |
+| Resource Group                   | ✅ Deployed   |
+| Virtual Network                  | ✅ Configured |
+| Subnets                          | ✅ Configured |
+| Network Security Group           | ✅ Configured |
+| Ubuntu Virtual Machine           | ✅ Running    |
+| SSH Authentication               | ✅ Working    |
+| Managed Disk                     | ✅ Mounted    |
+| Nginx Web Server                 | ✅ Running    |
+| HTTP Connectivity                | ✅ Verified   |
+| System Assigned Managed Identity | ✅ Enabled    |
+
+---
+
+# Identity Configuration
+
+| Property          | Value                                  |
+| ----------------- | -------------------------------------- |
+| Identity Type     | System Assigned                        |
+| Assigned Resource | `vm-linux-01`                          |
+| Principal ID      | `5cd94e29-8c3a-4124-a17d-44f815094dc6` |
+| Tenant ID         | `7f9379f6-3f68-4925-9d9e-ebd4ab9301cc` |
+
+---
+
+# Network Configuration
+
+| Component       | Configuration         |
+| --------------- | --------------------- |
+| Virtual Network | `vnet-az104-training` |
+| Address Space   | `10.0.0.0/16`         |
+| Frontend Subnet | `10.0.1.0/24`         |
+| Backend Subnet  | `10.0.2.0/24`         |
+| NSG             | `vm-linux-01NSG`      |
+| Allowed Ports   | SSH (22), HTTP (80)   |
+
+---
+
+# Storage Configuration
+
+| Disk      | Size  | Mount Point |
+| --------- | ----- | ----------- |
+| OS Disk   | 30 GB | `/`         |
+| Data Disk | 16 GB | `/data`     |
+
+---
+
+# Next Planned Enhancements
+
+The following components are planned for future implementation as part of the AZ-104 bootcamp:
+
+* Azure Storage Account
+* Azure Key Vault
+* Azure Backup
+* Azure Monitor
+* Azure Recovery Services Vault
+* Azure Virtual Machine Backup
+* Azure Monitoring and Alerts
+* Azure Automation
+* Secure resource access using Managed Identity
+
+This keeps **one evolving architecture document**, as per your documentation standard, and only reflects the current infrastructure instead of appending historical diagrams.
+

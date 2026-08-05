@@ -264,3 +264,69 @@ Focus areas:
 - Role-Based Access Control (RBAC)
 - Managed Identity
 - Azure Key Vault (Introduction)
+
+
+# Day 05 – Daily Progress
+
+**Date:** 05 August 2026
+
+## Objective
+
+Implement Azure Identity and Access Management (IAM) concepts by exploring Microsoft Entra ID, Azure RBAC, and enabling a System Assigned Managed Identity for the existing Linux virtual machine using Azure CLI.
+
+---
+
+## Activities Completed
+
+* Verified the active Azure subscription and tenant.
+* Confirmed the authenticated Microsoft Entra account.
+* Listed Microsoft Entra users and groups.
+* Explored Azure RBAC built-in role definitions.
+* Reviewed current Azure RBAC role assignments.
+* Verified subscription-level **Owner** permissions.
+* Enabled a **System Assigned Managed Identity** on `vm-linux-01`.
+* Verified the managed identity configuration using Azure CLI.
+* Updated project architecture to include the managed identity.
+* Created Day 05 documentation and automation script.
+
+---
+
+## Skills Learned
+
+* Microsoft Entra ID administration
+* Azure RBAC role inspection
+* RBAC scope and role assignment verification
+* Managed Identity configuration
+* Azure CLI identity management commands
+* Infrastructure verification using Azure CLI
+
+---
+
+## Deliverables
+
+* ✅ `labs/Day-05/Lab.md`
+* ✅ `labs/Day-05/Notes.md`
+* ✅ `labs/Day-05/Verification.md`
+* ✅ `labs/Day-05/Resources.md`
+* ✅ `scripts/azure-cli/Day-05.sh`
+* ✅ Updated `Architecture.md`
+* ✅ Updated `Daily-Progress.md`
+
+---
+
+## Challenges
+
+No technical issues or permission-related errors were encountered during the implementation.
+
+---
+
+## Solutions
+
+Not applicable. All Azure CLI commands executed successfully, and the managed identity was enabled and verified without additional troubleshooting.
+
+---
+
+## Outcome
+
+The Azure environment now includes a **System Assigned Managed Identity** attached to `vm-linux-01`. This prepares the infrastructure for future labs involving secure authentication to Azure services such as Azure Key Vault, Azure Storage, and Azure Automation without using stored credentials.
+
