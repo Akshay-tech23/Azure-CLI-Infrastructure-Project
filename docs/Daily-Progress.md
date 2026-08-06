@@ -330,3 +330,135 @@ Not applicable. All Azure CLI commands executed successfully, and the managed id
 
 The Azure environment now includes a **System Assigned Managed Identity** attached to `vm-linux-01`. This prepares the infrastructure for future labs involving secure authentication to Azure services such as Azure Key Vault, Azure Storage, and Azure Automation without using stored credentials.
 
+# Daily Progress
+
+## Project
+
+**Azure AZ-104 Infrastructure Project**
+
+Repository: **Azure-CLI-Infrastructure-Project**
+
+---
+
+# Progress Summary
+
+| Day    | Module                                                         | Status      |
+| ------ | -------------------------------------------------------------- | ----------- |
+| Day 01 | Azure CLI, Resource Groups                                     | ✅ Completed |
+| Day 02 | Virtual Networks, Subnets, Network Security Groups             | ✅ Completed |
+| Day 03 | Azure Virtual Machines, Linux Administration, Managed Disks    | ✅ Completed |
+| Day 04 | SSH Administration, Linux Services, Nginx, NSG Troubleshooting | ✅ Completed |
+| Day 05 | Microsoft Entra ID, Azure RBAC, Managed Identity               | ✅ Completed |
+| Day 06 | Azure Storage Administration                                   | ✅ Completed |
+
+---
+
+# Day 06 Summary
+
+## Module
+
+Azure Storage Administration
+
+## Objectives Completed
+
+* Created an Azure StorageV2 account using Azure CLI.
+* Verified Storage Account configuration.
+* Reviewed Storage Account properties.
+* Created a Blob Storage container.
+* Uploaded a blob using Microsoft Entra ID authentication.
+* Listed blobs within the container.
+* Downloaded a blob and verified file integrity.
+* Generated a User Delegation Shared Access Signature (SAS).
+* Accessed a blob using the generated SAS token.
+* Reviewed Storage Account networking configuration.
+* Applied Azure RBAC for Storage Blob data-plane access.
+* Troubleshot Azure RBAC propagation and authentication token refresh.
+
+---
+
+# Resources Created
+
+| Resource        | Name                 |
+| --------------- | -------------------- |
+| Storage Account | `staz104training01`  |
+| Blob Container  | `training-container` |
+| Sample Blob     | `sample.txt`         |
+
+---
+
+# Security Features Implemented
+
+* HTTPS-only storage access.
+* Microsoft-managed encryption.
+* Microsoft Entra ID authentication.
+* Azure RBAC authorization.
+* User Delegation SAS.
+* Blob Public Access disabled.
+* Server-side encryption verification.
+
+---
+
+# Lessons Learned
+
+* Azure Storage separates management-plane and data-plane authorization.
+* Azure RBAC changes may require access token refresh before taking effect.
+* Microsoft Entra ID is the preferred authentication mechanism for Azure Storage.
+* User Delegation SAS provides secure, temporary access without exposing storage account keys.
+* Azure CLI can perform complete Blob Storage administration without using the Azure portal.
+
+---
+
+# Current Azure Environment
+
+## Resource Group
+
+```text id="kgjlwm"
+rg-az104-training
+```
+
+## Virtual Machine
+
+```text id="pnqlvv"
+vm-linux-01
+```
+
+## Storage Account
+
+```text id="4sj8v2"
+staz104training01
+```
+
+## Blob Container
+
+```text id="2i9pqk"
+training-container
+```
+
+---
+
+# Next Module
+
+**Day 07 – Azure File Storage, Azure Files, Storage Security, Lifecycle Management, and Storage Monitoring**
+
+The next module will expand Azure Storage administration by covering Azure Files, file shares, lifecycle management policies, monitoring, diagnostics, and storage optimization techniques commonly used in enterprise environments.
+
+---
+
+# Overall Bootcamp Progress
+
+| Category                     | Completion |
+| ---------------------------- | ---------- |
+| Azure CLI                    | ✅          |
+| Resource Management          | ✅          |
+| Networking                   | ✅          |
+| Virtual Machines             | ✅          |
+| Linux Administration         | ✅          |
+| Identity & Access Management | ✅          |
+| Azure Storage                | ✅          |
+| Azure Files                  | ⏳ Upcoming |
+| Monitoring                   | ⏳ Upcoming |
+| Backup & Recovery            | ⏳ Upcoming |
+
+---
+
+**Current Bootcamp Status:** **Day 06 Completed Successfully** ✅

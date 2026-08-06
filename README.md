@@ -10,284 +10,195 @@
 
 ---
 
-# Project Overview
+# Project Goals
 
-This repository documents my journey toward becoming an **Azure Administrator** by building and managing cloud infrastructure using **Azure CLI** instead of relying solely on the Azure Portal.
-
-The project follows a structured, hands-on approach where every lab includes:
-
-- Practical implementation
-- Technical notes
-- Verification and evidence
-- Troubleshooting
-- Automation scripts
-- Enterprise-style documentation
-
-The goal is to develop real-world Azure administration skills while preparing for the **Microsoft Certified: Azure Administrator Associate (AZ-104)** certification.
+* Develop practical Azure Administrator skills through hands-on implementation.
+* Build an enterprise-quality GitHub portfolio.
+* Document every deployment with professional technical documentation.
+* Use Azure CLI as the primary administration tool.
+* Follow Microsoft Azure administration best practices.
 
 ---
 
-# Project Objectives
+# Azure Environment
 
-- Learn Azure administration through practical labs
-- Build infrastructure using Azure CLI
-- Develop Linux administration skills
-- Understand Azure networking and security
-- Practice troubleshooting and diagnostics
-- Create reusable automation scripts
-- Maintain professional project documentation
-- Build a GitHub portfolio showcasing cloud administration skills
+| Property       | Value               |
+| -------------- | ------------------- |
+| Subscription   | Azure for Students  |
+| Region         | Central India       |
+| Resource Group | `rg-az104-training` |
 
 ---
 
-# Current Infrastructure
-
-```
-Internet
-    │
-Public IP
-    │
-Network Security Group
-    │
-Ubuntu Linux VM
-    │
-Nginx Web Server
-    │
-Backend Subnet
-    │
-Virtual Network
-    │
-Resource Group
-```
-
----
-
-# Technologies Used
-
-## Cloud
-
-- Microsoft Azure
-- Azure CLI
-- Azure Cloud Shell
-
-## Operating System
-
-- Ubuntu Server 24.04 LTS
+# Infrastructure Overview
 
 ## Networking
 
-- Azure Virtual Network
-- Network Security Groups
-- Public IP Address
+* Virtual Network (`vnet-az104-training`)
+* Frontend Subnet (`10.0.1.0/24`)
+* Backend Subnet (`10.0.2.0/24`)
+* Network Security Group
+* SSH and HTTP security rules
+
+---
+
+## Compute
+
+* Ubuntu Server 24.04 LTS
+* Azure Virtual Machine (`vm-linux-01`)
+* Standard_B2s_v2
+* SSH Key Authentication
+* Nginx Web Server
+* Managed Data Disk mounted at `/data`
+
+---
+
+## Identity
+
+* Microsoft Entra ID
+* Azure RBAC
+* System Assigned Managed Identity
+* Role Assignments
+* Identity Verification
+
+---
 
 ## Storage
 
-- Azure Managed Disks
-- ext4 Filesystem
+* Storage Account (`staz104training01`)
+* StorageV2
+* Standard_LRS
+* Blob Storage
+* Blob Container (`training-container`)
+* Microsoft Entra Authentication
+* User Delegation SAS
+* Azure RBAC Data-Plane Authorization
+
+---
+
+# Bootcamp Progress
+
+| Day    | Module                       | Status |
+| ------ | ---------------------------- | ------ |
+| Day 01 | Azure CLI & Resource Groups  | ✅      |
+| Day 02 | Azure Networking             | ✅      |
+| Day 03 | Azure Virtual Machines       | ✅      |
+| Day 04 | Linux Administration         | ✅      |
+| Day 05 | Identity & Access Management | ✅      |
+| Day 06 | Azure Storage Administration | ✅      |
+
+---
+
+# Skills Demonstrated
+
+## Infrastructure Administration
+
+* Azure CLI
+* Resource Group Management
+* Virtual Networks
+* Network Security Groups
+* Virtual Machine Administration
+* Managed Disks
+
+---
 
 ## Linux Administration
 
-- SSH
-- systemd
-- APT
-- curl
-- ss
+* SSH Management
+* Package Management
+* Systemd Services
+* Nginx Administration
+* Persistent Storage Configuration
 
-## Web Server
+---
 
-- Nginx
+## Identity & Security
 
-## Version Control
+* Microsoft Entra ID
+* Azure RBAC
+* Managed Identity
+* Role Assignments
+* Principle of Least Privilege
 
-- Git
-- GitHub
+---
+
+## Azure Storage
+
+* Storage Account Deployment
+* Blob Container Management
+* Blob Upload & Download
+* Microsoft Entra Authentication
+* User Delegation SAS
+* Storage Networking
+* Azure Storage Security
+* RBAC Data-Plane Authorization
+* SAS-Based Secure File Sharing
 
 ---
 
 # Repository Structure
 
-```
+```text
 Azure-CLI-Infrastructure-Project/
-│
-├── docs/
-│   ├── Architecture.md
-│   ├── Daily-Progress.md
-│   ├── Project-Overview.md
-│   ├── Resources.md
-│   └── Troubleshooting.md
 │
 ├── labs/
 │   ├── Day-01/
 │   ├── Day-02/
 │   ├── Day-03/
-│   └── Day-04/
+│   ├── Day-04/
+│   ├── Day-05/
+│   └── Day-06/
 │
 ├── scripts/
 │   └── azure-cli/
 │
 ├── screenshots/
 │
-├── LICENSE
-│
+├── Architecture.md
+├── Daily-Progress.md
+├── Resources.md
+├── Troubleshooting.md
 └── README.md
 ```
 
 ---
 
-# Learning Progress
-
-| Day | Topic | Status |
-|-----|-------------------------------|--------|
-| Day 01 | Azure Environment Setup | ✅ |
-| Day 02 | Azure Networking Fundamentals | ✅ |
-| Day 03 | Azure Virtual Machines & Managed Disks | ✅ |
-| Day 04 | Linux Administration & Nginx Deployment | ✅ |
-| Day 05 | Microsoft Entra ID & RBAC | ⏳ |
-
----
-
-# Skills Demonstrated
-
-### Azure
-
-- Resource Groups
-- Virtual Networks
-- Subnets
-- Virtual Machines
-- Network Security Groups
-- Managed Disks
-- Azure CLI
-
-### Linux
-
-- SSH Administration
-- Package Management
-- Service Management
-- Disk Management
-- Network Diagnostics
-
-### Infrastructure
-
-- Infrastructure Deployment
-- Security Configuration
-- Troubleshooting
-- Documentation
-- Validation
-
----
-
 # Documentation
 
-| Document | Description |
-|----------|-------------|
-| Architecture.md | Infrastructure design and topology |
-| Daily-Progress.md | Daily learning progress |
-| Project-Overview.md | Executive summary |
-| Resources.md | Commands and reference materials |
-| Troubleshooting.md | Issues, root causes, and resolutions |
+Each day includes:
 
-Each day's lab includes:
+* Lab Guide
+* Technical Notes
+* Verification Report
+* Learning Resources
+* Azure CLI Scripts
 
-- Lab Guide
-- Notes
-- Verification
-- Resources
+All documentation is written using enterprise documentation standards and validated through successful Azure CLI execution.
 
 ---
 
-# Automation Scripts
+# Technologies Used
 
-The `scripts/azure-cli/` directory contains reusable Azure CLI scripts for:
-
-- Infrastructure management
-- Network configuration
-- Resource verification
-- Administrative tasks
-
-These scripts are designed to reinforce Infrastructure as Code (IaC) principles using Azure CLI.
-
----
-
-# Screenshots
-
-Screenshots documenting deployments and verification are stored in:
-
-```
-screenshots/
-```
-
-Examples include:
-
-- Azure resources
-- Azure CLI output
-- Linux terminal
-- Nginx deployment
-- Browser verification
-- Network troubleshooting
+* Microsoft Azure
+* Azure CLI
+* Azure Cloud Shell
+* Ubuntu Server 24.04 LTS
+* Microsoft Entra ID
+* Azure Blob Storage
+* Git & GitHub
 
 ---
 
-# Future Roadmap
+# Next Milestone
 
-Upcoming topics include:
-
-- Microsoft Entra ID
-- Azure RBAC
-- Managed Identity
-- Azure Key Vault
-- Azure Monitor
-- Log Analytics
-- Azure Backup
-- Azure Automation
-- Azure Bastion
-- Azure Load Balancer
-
-Each topic will include hands-on labs, documentation, verification, troubleshooting, and automation scripts.
+**Day 07 – Azure Files, Storage Security, Lifecycle Management, and Storage Monitoring**
 
 ---
 
-# Learning Approach
-
-Every feature added to this project follows the same workflow:
-
-1. Study the concept
-2. Deploy using Azure CLI
-3. Verify the deployment
-4. Troubleshoot issues
-5. Document the implementation
-6. Automate where possible
-
-This approach mirrors real-world cloud administration practices.
-
----
-
-# About This Project
-
-This project is intended for:
-
-- Azure learners
-- AZ-104 certification candidates
-- Cloud engineering students
-- System administrators
-- Recruiters reviewing technical portfolios
-
-It demonstrates practical Azure administration through incremental, documented, and verifiable infrastructure deployments.
-
----
-
-# License
-
-This project is licensed under the MIT License.
-
----
-
-## Connect With Me
+# Author
 
 **Akshay A**
 
-- LinkedIn: https://www.linkedin.com/in/akshay-a-dev/
-- GitHub: https://github.com/Akshay-tech23
+B.Tech – Artificial Intelligence and Data Science
 
----
-
-⭐ If you found this repository useful, consider giving it a star.
+Microsoft Azure Administrator (AZ-104) Bootcamp Project

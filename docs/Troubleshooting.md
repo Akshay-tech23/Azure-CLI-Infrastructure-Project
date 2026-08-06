@@ -309,3 +309,176 @@ Effective troubleshooting requires validating every layer of the stack:
 7. Public Network Access
 
 Following a structured troubleshooting process helps identify the true root cause efficiently and avoids unnecessary configuration changes.
+
+# Troubleshooting Guide
+
+This document records actual issues encountered during the Azure AZ-104 Infrastructure Project, including their causes, troubleshooting process, and resolutions.
+
+---
+
+# Issue 01 – Azure Storage Blob Upload Authorization Failure
+
+## Module
+
+Day 06 – Azure Storage Administration
+
+---
+
+## Problem
+
+Uploading a blob using Microsoft Entra ID authentication failed.
+
+Command executed:
+
+```bash id="ex7lqk"
+az storage blob upload \
+  --account-name staz104training01 \
+  --container-name training-container \
+  --name sample.txt \
+  --file sample.txt \
+  --auth-mode login
+```
+
+Error:
+
+```text id="eg5it8"
+You do not have the required permissions needed to perform this operation.
+```
+
+---
+
+## Symptoms
+
+* Blob container creation succeeded.
+* Blob upload failed.
+* Microsoft Entra authentication was being used.
+* Storage account deployment completed successfully.
+
+---
+
+## Investigation
+
+### Step 1
+
+Verified Azure RBAC assignments.
+
+```bash id="mvnmlk"
+az role assignment list \
+  --assignee $(az ad signed-in-user show --query id -o tsv) \
+  --scope $(az storage account show \
+      --name staz104training01 \
+      --resource-group rg-az104-training \
+      --query id -o tsv) \
+  --output table
+```
+
+Result:
+
+No Storage Blob Data role assignment was present.
+
+---
+
+### Step 2
+
+Assigned the required Azure RBAC role.
+
+```bash id="5qtdut"
+az role assignment create \
+  --assignee $(az ad signed-in-user show --query id -o tsv) \
+  --role "Storage Blob Data Contributor" \
+  --scope $(az storage account show \
+      --name staz104training01 \
+      --resource-group rg-az104-training \
+      --query id -o tsv)
+```
+
+The role assignment completed successfully.
+
+---
+
+### Step 3
+
+Retried the upload.
+
+The upload still failed with the same authorization error.
+
+---
+
+### Step 4
+
+Verified the new role assignment.
+
+Azure confirmed:
+
+```text id="7q7bks"
+Storage Blob Data Contributor
+```
+
+was correctly assigned to the signed-in user.
+
+---
+
+### Root Cause
+
+The Azure CLI was using an existing Microsoft Entra access token that had been issued before the new Azure RBAC assignment became effective.
+
+Although the role assignment existed, the cached access token did not yet contain the updated authorization information.
+
+---
+
+## Resolution
+
+Requested a new Azure Storage access token.
+
+```bash id="gm0qem"
+az account get-access-token \
+    --resource https://storage.azure.com/
+```
+
+After refreshing the token, the blob upload command succeeded without requiring storage account keys.
+
+---
+
+## Verification
+
+Successful upload:
+
+* Blob uploaded successfully.
+* Server-side encryption enabled.
+* Microsoft Entra authentication used.
+* No storage account keys required.
+
+---
+
+## Lessons Learned
+
+* Azure Storage uses separate management-plane and data-plane authorization.
+* Azure RBAC assignments may require propagation before becoming effective.
+* Existing Azure CLI access tokens may need to be refreshed after new role assignments.
+* Microsoft Entra ID with Azure RBAC is the preferred authentication method for Azure Storage.
+* Avoid switching to storage account keys before verifying RBAC configuration and refreshing authentication.
+
+---
+
+# Best Practices
+
+* Assign the minimum Azure RBAC role required.
+* Verify role assignments before troubleshooting authentication.
+* Refresh the Azure Storage access token after creating new RBAC assignments.
+* Use Microsoft Entra ID instead of storage account keys whenever possible.
+* Validate access using Azure CLI before testing application connectivity.
+
+---
+
+# Summary
+
+| Item                   | Status |
+| ---------------------- | ------ |
+| Issue Identified       | ✅      |
+| Root Cause Determined  | ✅      |
+| Azure RBAC Verified    | ✅      |
+| Access Token Refreshed | ✅      |
+| Blob Upload Successful | ✅      |
+| Lab Completed          | ✅      |
+
+This troubleshooting exercise demonstrates a common enterprise Azure Storage authorization scenario and reinforces the distinction between Azure RBAC configuration and authentication token lifecycle management.

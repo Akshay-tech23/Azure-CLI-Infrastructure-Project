@@ -549,3 +549,285 @@ git push origin main
 ```
 
 From Day 06 onward, I'll maintain this concise documentation style while keeping it professional and portfolio-ready.
+
+# Resources
+
+## Overview
+
+This document serves as the central reference for the **Azure AZ-104 Infrastructure Project**. It contains the primary Azure services, Azure CLI commands, Microsoft Learn documentation, and best practices used throughout the project.
+
+As additional bootcamp modules are completed, this document will be expanded to include new Azure services and administrative concepts.
+
+---
+
+# Azure Services Covered
+
+| Module | Azure Service                 | Status |
+| ------ | ----------------------------- | ------ |
+| Day 01 | Azure Resource Groups         | ✅      |
+| Day 01 | Azure CLI                     | ✅      |
+| Day 02 | Azure Virtual Network         | ✅      |
+| Day 02 | Network Security Groups       | ✅      |
+| Day 03 | Azure Virtual Machines        | ✅      |
+| Day 03 | Azure Managed Disks           | ✅      |
+| Day 04 | Linux Administration          | ✅      |
+| Day 04 | Nginx Web Server              | ✅      |
+| Day 05 | Microsoft Entra ID            | ✅      |
+| Day 05 | Azure RBAC                    | ✅      |
+| Day 05 | Managed Identity              | ✅      |
+| Day 06 | Azure Storage Account         | ✅      |
+| Day 06 | Azure Blob Storage            | ✅      |
+| Day 06 | Shared Access Signature (SAS) | ✅      |
+
+---
+
+# Azure CLI Commands Reference
+
+## Resource Management
+
+```bash id="9o8ewb"
+az group create
+az group list
+az group show
+az group delete
+```
+
+---
+
+## Virtual Networking
+
+```bash id="d4m0dg"
+az network vnet create
+az network subnet create
+az network nsg create
+az network nsg rule create
+az network public-ip create
+```
+
+---
+
+## Virtual Machines
+
+```bash id="egj2yc"
+az vm create
+az vm show
+az vm list
+az vm start
+az vm stop
+az vm restart
+az vm deallocate
+```
+
+---
+
+## Managed Disks
+
+```bash id="kquwyf"
+az disk create
+az vm disk attach
+az vm disk detach
+```
+
+---
+
+## Identity and Access
+
+```bash id="jlwmvb"
+az ad signed-in-user show
+az role assignment list
+az role assignment create
+az identity show
+```
+
+---
+
+## Azure Storage
+
+```bash id="jlwmvc"
+az storage account create
+az storage account show
+az storage container create
+az storage blob upload
+az storage blob list
+az storage blob download
+az storage blob generate-sas
+```
+
+---
+
+# Azure Security Best Practices
+
+## Identity
+
+* Use Microsoft Entra ID for authentication.
+* Apply the principle of least privilege.
+* Use Managed Identities whenever possible.
+* Review Azure RBAC assignments regularly.
+
+---
+
+## Storage
+
+* Prefer StorageV2 accounts.
+* Use HTTPS-only traffic.
+* Disable anonymous blob access.
+* Prefer User Delegation SAS over Account SAS.
+* Rotate Storage Account Keys periodically.
+* Avoid storing credentials in source code.
+
+---
+
+## Networking
+
+* Restrict inbound traffic using Network Security Groups.
+* Allow only required ports.
+* Use Private Endpoints where appropriate.
+* Implement Storage Firewalls for production workloads.
+* Use Virtual Networks to isolate resources.
+
+---
+
+# Microsoft Learn References
+
+## Core Azure Administration
+
+* Azure CLI
+* Azure Resource Manager
+* Azure Resource Groups
+* Azure Virtual Machines
+* Azure Virtual Networks
+* Azure Storage
+* Microsoft Entra ID
+* Azure RBAC
+
+---
+
+## Azure Storage
+
+Topics covered:
+
+* Storage Accounts
+* StorageV2
+* Blob Storage
+* Blob Containers
+* Performance Tiers
+* Replication Options
+* Shared Access Signatures
+* Azure Storage Security
+* Azure Storage Networking
+
+---
+
+# Repository Structure
+
+```text id="7x0zke"
+Azure-CLI-Infrastructure-Project/
+│
+├── labs/
+│   ├── Day-01/
+│   ├── Day-02/
+│   ├── Day-03/
+│   ├── Day-04/
+│   ├── Day-05/
+│   └── Day-06/
+│
+├── scripts/
+│   └── azure-cli/
+│
+├── screenshots/
+│
+├── Architecture.md
+├── Daily-Progress.md
+├── Resources.md
+├── Troubleshooting.md
+└── README.md
+```
+
+---
+
+# Current Azure Environment
+
+| Resource               | Name                  |
+| ---------------------- | --------------------- |
+| Resource Group         | `rg-az104-training`   |
+| Virtual Network        | `vnet-az104-training` |
+| Linux Virtual Machine  | `vm-linux-01`         |
+| Network Security Group | `vm-linux-01NSG`      |
+| Storage Account        | `staz104training01`   |
+| Blob Container         | `training-container`  |
+
+---
+
+# Current Skills Acquired
+
+## Infrastructure
+
+* Azure CLI Administration
+* Resource Group Management
+* Virtual Network Administration
+* Network Security Group Configuration
+* Azure Virtual Machine Administration
+* Azure Managed Disk Management
+
+---
+
+## Linux Administration
+
+* SSH Access
+* Package Management
+* System Services
+* Nginx Administration
+* Persistent Storage Management
+
+---
+
+## Identity & Security
+
+* Microsoft Entra ID
+* Azure RBAC
+* Managed Identity
+* Role Assignments
+* Azure Authorization
+
+---
+
+## Azure Storage
+
+* Storage Account Administration
+* Blob Storage Management
+* Blob Container Administration
+* Blob Upload and Download
+* User Delegation SAS
+* Azure Storage Networking
+* Azure Storage Security
+* Azure Storage RBAC
+
+---
+
+# Upcoming Modules
+
+The following AZ-104 topics are planned for future implementation:
+
+* Azure Files
+* Lifecycle Management Policies
+* Azure Backup
+* Azure Monitor
+* Log Analytics
+* Azure Recovery Services Vault
+* Virtual Machine Backup
+* Azure Load Balancer
+* Azure Application Gateway
+* Azure DNS
+* Azure VPN Gateway
+* Azure Site Recovery
+* Azure Policy
+* Azure Locks
+* Azure Automation
+
+---
+
+# Project Status
+
+**Bootcamp Progress:** **Day 06 Completed** ✅
+
+The repository currently demonstrates practical administration of Azure infrastructure, networking, Linux virtual machines, identity and access management, and Azure Storage using Azure CLI with enterprise-focused documentation and implementation practices.
