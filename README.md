@@ -86,6 +86,7 @@
 | Day 04 | Linux Administration         | ✅      |
 | Day 05 | Identity & Access Management | ✅      |
 | Day 06 | Azure Storage Administration | ✅      |
+| Day 07 | Azure Files and Management   | ✅      |
 
 ---
 

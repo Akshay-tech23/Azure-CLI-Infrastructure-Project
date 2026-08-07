@@ -482,3 +482,88 @@ Successful upload:
 | Lab Completed          | ✅      |
 
 This troubleshooting exercise demonstrates a common enterprise Azure Storage authorization scenario and reinforces the distinction between Azure RBAC configuration and authentication token lifecycle management.
+# Troubleshooting Guide
+
+## Day 04 – SSH Private Key Permission Denied
+
+### Issue
+
+SSH connection to the Linux Virtual Machine failed because the private key file had insecure permissions.
+
+### Resolution
+
+* Moved the SSH key to the local `.ssh` directory.
+* Removed inherited permissions.
+* Granted read access only to the current user.
+* Reconnected successfully using the updated key permissions.
+
+---
+
+## Day 05 – Azure Storage RBAC Propagation Delay
+
+### Issue
+
+Blob Storage operations using Microsoft Entra ID returned authorization errors immediately after assigning the **Storage Blob Data Contributor** role.
+
+### Resolution
+
+* Verified the RBAC role assignment.
+* Refreshed the Azure CLI access token.
+* Waited for Azure RBAC propagation.
+* Retried the operation successfully.
+
+---
+
+## Day 07 – Azure Files OAuth Authentication
+
+### Issue
+
+Azure CLI file operations using Microsoft Entra ID (`--auth-mode login`) returned authorization errors even after assigning the **Storage File Data SMB Share Contributor** role.
+
+### Resolution
+
+* Verified the RBAC role assignment at the storage account scope.
+* Refreshed the Azure CLI authentication token.
+* Confirmed the required role assignment.
+* Used Shared Key authentication for Azure Files operations, which completed successfully.
+
+---
+
+## Day 07 – Azure CLI File Download Destination
+
+### Issue
+
+Downloading a file with:
+
+```bash
+--dest downloaded-sample-file.txt
+```
+
+returned:
+
+```
+[Errno 2] No such file or directory:
+'downloaded-sample-file.txt/sample-file.txt'
+```
+
+### Resolution
+
+The Azure CLI interpreted `--dest` as a destination directory rather than a filename.
+
+Downloaded the file successfully using:
+
+```bash
+--dest .
+```
+
+which saved the file in the current working directory.
+
+---
+
+## Best Practices
+
+* Verify Azure RBAC assignments before troubleshooting permissions.
+* Allow sufficient time for Azure RBAC propagation after creating role assignments.
+* Refresh Azure CLI authentication tokens after RBAC changes.
+* Validate Azure CLI command syntax and parameter behavior before assuming configuration issues.
+* Use Shared Key authentication for Azure Files administrative operations when OAuth-based Azure CLI support is limited.

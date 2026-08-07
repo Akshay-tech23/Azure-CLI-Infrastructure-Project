@@ -462,3 +462,48 @@ The next module will expand Azure Storage administration by covering Azure Files
 ---
 
 **Current Bootcamp Status:** **Day 06 Completed Successfully** ✅
+
+# Daily Progress
+
+## Day 07 – Azure Files and Advanced Azure Storage Management
+
+**Status:** ✅ Completed
+
+### Objectives Completed
+
+* Reviewed the existing Azure Storage Account.
+* Created an Azure File Share using Azure CLI.
+* Verified the SMB file share configuration.
+* Uploaded, listed, and downloaded files from Azure Files.
+* Assigned Azure Files RBAC permissions.
+* Enabled Blob Soft Delete with a 7-day retention period.
+* Enabled Blob Versioning.
+* Configured and verified a Lifecycle Management Policy.
+* Reviewed Azure Monitor Metrics.
+* Reviewed Diagnostic Settings.
+* Hardened the Storage Account by upgrading the Minimum TLS version to TLS 1.2.
+
+### Azure Services Used
+
+* Azure Storage Account
+* Azure Blob Storage
+* Azure Files
+* Azure Monitor
+* Microsoft Entra ID
+* Azure RBAC
+
+### Skills Gained
+
+* Azure Files Administration
+* SMB File Share Management
+* Azure Storage Data Protection
+* Blob Soft Delete
+* Blob Versioning
+* Lifecycle Management
+* Azure Storage Monitoring
+* Azure Storage Security Hardening
+* Azure CLI Storage Administration
+
+### Lab Outcome
+
+The existing Azure Storage Account was enhanced with Azure Files and advanced storage management capabilities. Enterprise storage features including Blob Soft Delete, Blob Versioning, Lifecycle Management, monitoring verification, and security hardening were successfully implemented and validated using Azure CLI.

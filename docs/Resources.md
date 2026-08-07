@@ -831,3 +831,56 @@ The following AZ-104 topics are planned for future implementation:
 **Bootcamp Progress:** **Day 06 Completed** ✅
 
 The repository currently demonstrates practical administration of Azure infrastructure, networking, Linux virtual machines, identity and access management, and Azure Storage using Azure CLI with enterprise-focused documentation and implementation practices.
+
+# Day 07 Resources
+
+## Microsoft Learn
+
+- Azure Storage documentation
+- Azure Files documentation
+- Azure Blob Storage documentation
+- Azure Storage Lifecycle Management
+- Azure Monitor documentation
+
+## Azure Services
+
+- Azure Storage Account
+- Azure Blob Storage
+- Azure Files
+- Azure Monitor
+- Microsoft Entra ID
+- Azure RBAC
+
+## Azure CLI Commands
+
+### Storage Account
+
+- `az storage account show`
+- `az storage account update`
+
+### Azure Files
+
+- `az storage share-rm create`
+- `az storage share-rm list`
+- `az storage file upload`
+- `az storage file list`
+- `az storage file download`
+
+### Blob Storage
+
+- `az storage account blob-service-properties update`
+
+### Lifecycle Management
+
+- `az storage account management-policy create`
+- `az storage account management-policy show`
+
+### Monitoring
+
+- `az monitor metrics list-definitions`
+- `az monitor diagnostic-settings list`
+
+### Identity & Access
+
+- `az role assignment create`
+- `az role assignment list`

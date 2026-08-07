@@ -396,3 +396,26 @@ The following components are planned for future implementation as part of the AZ
 
 This keeps **one evolving architecture document**, as per your documentation standard, and only reflects the current infrastructure instead of appending historical diagrams.
 
+## Day 07 – Azure Files and Advanced Azure Storage Management
+
+### Completed
+
+- Reviewed existing Storage Account
+- Created Azure File Share
+- Verified SMB File Share
+- Uploaded and downloaded files using Azure CLI
+- Enabled Blob Soft Delete
+- Enabled Blob Versioning
+- Configured Lifecycle Management Policy
+- Reviewed Azure Monitor Metrics
+- Reviewed Diagnostic Settings
+- Hardened Storage Account by upgrading Minimum TLS to TLS 1.2
+
+### Skills Gained
+
+- Azure Files Administration
+- SMB File Share Management
+- Azure Storage Data Protection
+- Lifecycle Management
+- Storage Monitoring
+- Storage Security Hardening
