@@ -567,3 +567,315 @@ which saved the file in the current working directory.
 * Refresh Azure CLI authentication tokens after RBAC changes.
 * Validate Azure CLI command syntax and parameter behavior before assuming configuration issues.
 * Use Shared Key authentication for Azure Files administrative operations when OAuth-based Azure CLI support is limited.
+
+# Day 08 — Troubleshooting Guide
+
+## Azure VM Networking Troubleshooting
+
+This guide documents the troubleshooting techniques practiced with the Azure Linux VM `vm-linux-01`.
+
+---
+
+## 1. VM Run Command Fails
+
+### Check
+
+```bash
+az vm run-command invoke \
+  --resource-group rg-az104-training \
+  --name vm-linux-01 \
+  --command-id RunShellScript \
+  --scripts "hostname"
+```
+
+### Verify
+
+Look for:
+
+```text
+ProvisioningState/succeeded
+```
+
+If the command succeeds, Azure can communicate with the VM through the Run Command agent.
+
+---
+
+## 2. DNS Resolution Problem
+
+### Test
+
+```bash
+getent ahostsv4 www.microsoft.com
+```
+
+### Expected
+
+An IPv4 address should be returned.
+
+Example:
+
+```text
+23.222.248.100
+```
+
+### Troubleshooting
+
+Check:
+
+```bash
+cat /etc/resolv.conf
+ip route
+```
+
+Then verify outbound connectivity.
+
+---
+
+## 3. VM Has No Network Connectivity
+
+### Check the routing table
+
+```bash
+ip route
+```
+
+Expected:
+
+```text
+default via 10.0.2.1 dev eth0
+10.0.2.0/24 dev eth0
+```
+
+The default route is required for traffic outside the local subnet.
+
+---
+
+## 4. Check VM IP Configuration
+
+From Azure:
+
+```bash
+az vm show \
+  --resource-group rg-az104-training \
+  --name vm-linux-01 \
+  --show-details \
+  --query "{PrivateIP:privateIps,PublicIP:publicIps,PowerState:powerState}" \
+  -o table
+```
+
+Check:
+
+* Private IP
+* Public IP
+* VM power state
+
+---
+
+## 5. Check NIC Configuration
+
+```bash
+az network nic show \
+  --resource-group rg-az104-training \
+  --name vm-linux-01VMNic \
+  -o json
+```
+
+Verify:
+
+* Private IP configuration
+* Subnet
+* Public IP association
+* NSG association
+
+---
+
+## 6. Check NSG Rules
+
+```bash
+az network nsg rule list \
+  --resource-group rg-az104-training \
+  --nsg-name vm-linux-01NSG \
+  -o table
+```
+
+For this lab, the important rules were:
+
+```text
+TCP 22 → SSH  → Allow
+TCP 80 → HTTP → Allow
+```
+
+If a required port is blocked, check the NSG before troubleshooting the application.
+
+---
+
+## 7. Check Effective NSG Rules
+
+Use:
+
+```bash
+az network nic list-effective-nsg \
+  --resource-group rg-az104-training \
+  --name vm-linux-01VMNic \
+  -o json
+```
+
+Do not rely only on the configured NSG rules.
+
+**Effective security rules** show what is actually applied to the NIC, including default rules.
+
+---
+
+## 8. HTTP Service Not Working
+
+### Check whether anything is listening
+
+```bash
+ss -tulpn
+```
+
+For this VM:
+
+```text
+0.0.0.0:80 → nginx
+```
+
+If nothing is listening on port 80, investigate the web server.
+
+### Test locally
+
+```bash
+curl -I http://localhost
+```
+
+Expected:
+
+```text
+HTTP/1.1 200 OK
+```
+
+If localhost works but the public IP does not, investigate Azure networking/NSG configuration.
+
+---
+
+## 9. Test External HTTP Connectivity
+
+From Cloud Shell:
+
+```bash
+curl -I http://98.70.41.38
+```
+
+Expected:
+
+```text
+HTTP/1.1 200 OK
+```
+
+If the local test works but the external test fails, check:
+
+1. Public IP association
+2. NIC
+3. NSG
+4. TCP/80 rule
+5. Nginx listening address
+6. Routing
+
+---
+
+## 10. Check Listening Services
+
+Use:
+
+```bash
+ss -tulpn
+```
+
+Important ports from this lab:
+
+```text
+22 → sshd
+80 → nginx
+53 → systemd-resolve
+323 → chronyd
+```
+
+This command helps determine whether a service is actually listening before investigating Azure networking.
+
+---
+
+## 11. Test Outbound HTTPS
+
+Run from the VM:
+
+```bash
+curl -I https://www.microsoft.com
+```
+
+Expected:
+
+```text
+HTTP/2 200
+```
+
+If this fails, investigate:
+
+* DNS
+* Default route
+* Outbound NSG rules
+* Network configuration
+* Internet connectivity
+
+---
+
+# Troubleshooting Decision Flow
+
+Use this order when troubleshooting Azure VM connectivity:
+
+```text
+1. Is the VM running?
+          ↓
+2. Does the VM have a valid IP configuration?
+          ↓
+3. Is the NIC attached correctly?
+          ↓
+4. Is the subnet correct?
+          ↓
+5. Does the NSG allow the required traffic?
+          ↓
+6. What are the effective NSG rules?
+          ↓
+7. Is the required port listening?
+          ↓
+8. Is the application/service running?
+          ↓
+9. Does localhost work?
+          ↓
+10. Does external connectivity work?
+```
+
+## Key Principle
+
+Always troubleshoot from the **network layer toward the application layer**.
+
+```text
+DNS
+ ↓
+Routing
+ ↓
+NIC / IP
+ ↓
+NSG
+ ↓
+Port
+ ↓
+Service
+ ↓
+Application
+```
+
+This structured approach helps identify whether a problem is caused by Azure networking, Linux networking, a firewall/security rule, or the application itself.
+
+## Day 08 Troubleshooting Status
+
+**Completed successfully ✅**

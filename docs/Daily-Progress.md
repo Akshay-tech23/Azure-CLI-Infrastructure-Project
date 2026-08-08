@@ -507,3 +507,88 @@ The next module will expand Azure Storage administration by covering Azure Files
 ### Lab Outcome
 
 The existing Azure Storage Account was enhanced with Azure Files and advanced storage management capabilities. Enterprise storage features including Blob Soft Delete, Blob Versioning, Lifecycle Management, monitoring verification, and security hardening were successfully implemented and validated using Azure CLI.
+
+# Day 08 — Daily Progress
+
+## Date
+
+**08 August 2026**
+
+## Focus
+
+**Azure VM Networking, NSG & Connectivity Troubleshooting**
+
+## Completed
+
+* Verified Azure VM Run Command functionality.
+* Tested DNS resolution from the Linux VM using `getent ahostsv4`.
+* Retrieved VM private IP, public IP, and power state.
+* Identified the VM's Network Interface (NIC).
+* Inspected NIC, subnet, VNet, public IP, and NSG configuration.
+* Reviewed NSG inbound rules for SSH and HTTP.
+* Verified effective NSG security rules.
+* Verified Nginx was running on TCP port 80.
+* Tested HTTP locally using `curl`.
+* Tested external HTTP connectivity through the VM's public IP.
+* Inspected Linux listening ports using `ss -tulpn`.
+* Inspected the Linux routing table using `ip route`.
+* Verified outbound HTTPS connectivity to Microsoft using `curl`.
+
+## Key Results
+
+```text
+VM State                    → Running
+Private IP                  → 10.0.2.4
+Public IP                   → 98.70.41.38
+SSH                         → TCP/22 Allowed
+HTTP                        → TCP/80 Allowed
+Nginx                       → Running
+Local HTTP                  → HTTP 200 OK
+External HTTP               → HTTP 200 OK
+Outbound HTTPS              → HTTP/2 200
+DNS Resolution              → Successful
+Routing                     → Verified
+Effective NSG Rules         → Verified
+```
+
+## Skills Practiced
+
+* Azure CLI
+* Azure VM Run Command
+* Azure VM networking
+* Network Interface management
+* VNet and subnet identification
+* Network Security Groups
+* Effective NSG rules
+* Linux networking
+* DNS troubleshooting
+* Routing troubleshooting
+* Port/service troubleshooting
+* HTTP/HTTPS connectivity testing
+* Nginx verification
+
+## AZ-104 Practical Learning
+
+The main troubleshooting approach practiced today was:
+
+```text
+DNS
+ ↓
+Routing
+ ↓
+NIC / IP
+ ↓
+NSG
+ ↓
+Port
+ ↓
+Service
+ ↓
+Application response
+```
+
+This provides a structured method for diagnosing Azure VM connectivity problems.
+
+## Day 08 Status
+
+**COMPLETED ✅**
