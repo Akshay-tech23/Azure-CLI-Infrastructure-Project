@@ -592,3 +592,58 @@ This provides a structured method for diagnosing Azure VM connectivity problems.
 ## Day 08 Status
 
 **COMPLETED ✅**
+## Day 09 — Azure Monitoring, Alerts and Operational Management
+
+### Completed
+
+* Reviewed Azure Monitor VM metric definitions
+* Collected VM CPU, network, disk, and availability metrics
+* Reviewed Azure Activity Log
+* Investigated Activity Log operation status and correlation
+* Verified VM Resource Health
+* Reviewed Storage Account platform metrics
+* Verified Storage capacity, transactions, and availability
+* Inspected VM and Storage Diagnostic Settings
+* Evaluated Log Analytics Workspace requirements and cost considerations
+* Created and verified a CPU metric alert
+* Reviewed Activity Log alert configuration
+* Reviewed Azure Advisor recommendations
+* Reviewed Service Health events
+* Performed Linux guest-level monitoring using VM Run Command
+* Checked Linux uptime and load
+* Checked memory utilization
+* Checked filesystem utilization
+* Checked guest network statistics
+* Checked top CPU-consuming processes
+* Investigated missing `/data` mount and expected data disk
+* Correlated Azure-side and guest-side monitoring evidence
+
+### Monitoring Configuration
+
+* Metric Alert: `alert-vm-linux-01-high-cpu`
+* Condition: Average CPU > 80%
+* Evaluation Frequency: 1 minute
+* Window: 5 minutes
+* Severity: 2
+* Auto-mitigation: Enabled
+* Action Group: Not configured
+* Log Analytics Workspace: Not created
+
+### Troubleshooting Findings
+
+* VM Resource Health: `Available`
+* VM Availability Metric: `1.0`
+* CPU utilization: approximately `0.21%`
+* Linux load average: `0.05, 0.02, 0.00`
+* Available memory: `7.1 GiB`
+* Root filesystem usage: `9%`
+* Guest network errors/drops: `0`
+* Previously documented 16 GB `/data` disk is currently not attached to the VM
+
+### Cost Management
+
+No Log Analytics Workspace, Action Group, VM Insights, NAT Gateway, or additional high-availability infrastructure was created.
+
+### Status
+
+**Day 09 — Completed**

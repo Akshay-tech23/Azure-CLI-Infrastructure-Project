@@ -879,3 +879,163 @@ This structured approach helps identify whether a problem is caused by Azure net
 ## Day 08 Troubleshooting Status
 
 **Completed successfully ✅**
+## Day 09 Troubleshooting
+
+### 1. Azure Monitor Metric Name Mismatch
+
+**Symptom**
+
+The following metric query failed:
+
+```text
+VM Availability Metric
+```
+
+Azure returned a `BadRequest` and reported that the valid metric name was:
+
+```text
+VmAvailabilityMetric
+```
+
+**Root Cause**
+
+The Azure Monitor metric had a different API metric name from its display name.
+
+* Display Name: `VM Availability Metric`
+* Metric Name: `VmAvailabilityMetric`
+
+**Resolution**
+
+The query was changed to:
+
+```bash
+az monitor metrics list \
+  --resource vm-linux-01 \
+  --resource-group rg-az104-training \
+  --resource-type Microsoft.Compute/virtualMachines \
+  --metrics "VmAvailabilityMetric" \
+  --interval PT1H \
+  --aggregation Average \
+  --output table
+```
+
+**Result**
+
+```text
+VM Availability Metric    1.0
+```
+
+**Lesson**
+
+When using Azure Monitor CLI/API commands, distinguish between the human-readable metric display name and the actual API metric name.
+
+---
+
+### 2. Resource Health REST API Version Error
+
+**Symptom**
+
+The initial Resource Health REST request returned:
+
+```text
+InvalidResourceType
+```
+
+The requested API version did not support the `events` resource type in the way the request expected.
+
+**Diagnosis**
+
+The supported Resource Health provider resource types were inspected:
+
+```bash
+az provider show \
+  --namespace Microsoft.ResourceHealth \
+  --query "resourceTypes[].{ResourceType:resourceType,ApiVersions:apiVersions}" \
+  --output table
+```
+
+The environment reported:
+
+```text
+events    2025-05-01-rc
+```
+
+**Resolution**
+
+The REST request was retried using the supported API version:
+
+```text
+2025-05-01-rc
+```
+
+The request then completed successfully with no active events returned.
+
+**Lesson**
+
+For Azure REST operations, verify the provider's supported resource types and API versions instead of assuming an API version.
+
+---
+
+### 3. Missing `/data` Data Disk
+
+**Symptom**
+
+The previously documented 16 GB data disk mounted at `/data` was not visible inside the Linux VM.
+
+**Evidence**
+
+```bash
+df -h
+```
+
+did not show `/data`.
+
+```bash
+findmnt /data
+```
+
+returned no result.
+
+```bash
+lsblk -f
+```
+
+showed only the OS disk (`sda`) and no `sdb`.
+
+The Azure VM configuration was then checked:
+
+```bash
+az vm show \
+  --resource-group rg-az104-training \
+  --name vm-linux-01 \
+  --query "storageProfile.dataDisks[].{Name:name,Lun:lun,SizeGB:diskSizeGb,ManagedDiskId:managedDisk.id}" \
+  --output table
+```
+
+No data disks were returned.
+
+**Root Cause**
+
+The 16 GB managed data disk previously documented for `/data` is currently not attached to `vm-linux-01`.
+
+**Resolution**
+
+No remediation was performed during Day 09.
+
+The issue was deliberately left unchanged because the lab scope prohibits unnecessary infrastructure changes and the objective was monitoring and diagnosis.
+
+**Lesson**
+
+Troubleshoot storage issues from both sides:
+
+```text
+Azure VM configuration
+        ↓
+Guest block devices
+        ↓
+Filesystem
+        ↓
+Mount point
+```
+
+Do not modify `/etc/fstab` or attempt a mount until Azure attachment and guest device visibility have been verified.
