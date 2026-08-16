@@ -1038,4 +1038,185 @@ Filesystem
 Mount point
 ```
 
-Do not modify `/etc/fstab` or attempt a mount until Azure attachment and guest device visibility have been verified.
+## Day 10 — Microsoft Entra ID and Azure RBAC
+
+### Issue 1 — Multiple Role Names with `az role definition list`
+
+**Symptom**
+
+The following approach failed:
+
+```text
+az role definition list --name "Storage Account Contributor" "Storage Blob Data Reader" "Storage Blob Data Contributor"
+```
+
+Azure CLI returned:
+
+```text
+unrecognized arguments: Storage Blob Data Reader Storage Blob Data Contributor
+```
+
+**Root Cause**
+
+The `--name` parameter was not being used as a multi-value argument.
+
+**Resolution**
+
+Used a single role-definition query and filtered the required roles with JMESPath:
+
+```text
+az role definition list --query "[?roleName=='Storage Account Contributor' || roleName=='Storage Blob Data Reader' || roleName=='Storage Blob Data Contributor']"
+```
+
+**Lesson**
+
+When multiple Azure RBAC role definitions need to be inspected, use a collection query with filtering rather than supplying multiple values to a single `--name` parameter.
+
+---
+
+### Issue 2 — Azure CLI Not Installed on VM
+
+**Symptom**
+
+A VM Run Command test attempted to execute:
+
+```text
+az version
+```
+
+The VM returned:
+
+```text
+az: not found
+```
+
+**Root Cause**
+
+Azure CLI was not installed inside `vm-linux-01`.
+
+**Resolution**
+
+Azure CLI was not installed because doing so would introduce an unnecessary VM modification.
+
+Instead, the VM's existing managed identity was tested directly through the Azure Instance Metadata Service.
+
+**Lesson**
+
+Do not modify a production-like VM simply to satisfy a diagnostic test when an existing platform capability can provide the required evidence.
+
+---
+
+### Issue 3 — Incorrect Object ID During RBAC Inspection
+
+**Symptom**
+
+An RBAC query returned:
+
+```text
+Cannot find user or service principal in graph database
+```
+
+**Root Cause**
+
+An incorrect principal Object ID was supplied.
+
+The verified identities were:
+
+```text
+User Object ID:
+5b20d537-fccf-4933-a212-432199f8f485
+
+VM Managed Identity Principal ID:
+5cd94e29-8c3a-4124-a17d-44f815094dc6
+```
+
+**Resolution**
+
+The correct user Object ID was used with:
+
+```text
+--assignee-object-id
+```
+
+The VM managed identity was verified separately using its own principal ID.
+
+**Lesson**
+
+Always verify the security principal before troubleshooting RBAC. Do not assume that a failed authorization query means the role assignment is missing.
+
+---
+
+### Issue 4 — Broad Managed Identity RBAC Query Returned No Rows
+
+**Symptom**
+
+A broad role-assignment query for the VM managed identity returned no rows.
+
+However, a previously verified storage-account-scoped query showed:
+
+```text
+Storage Blob Data Reader
+```
+
+and the VM successfully accessed the Blob with:
+
+```text
+HTTP_STATUS:200
+```
+
+**Root Cause**
+
+The broad query did not provide reliable evidence for the resource-scoped assignment.
+
+**Resolution**
+
+The exact storage-account scope was queried using:
+
+```text
+--assignee-object-id
+```
+
+The assignment was confirmed:
+
+```text
+Role:
+Storage Blob Data Reader
+
+Scope:
+staz104training01
+
+Assignment ID:
+5f00d148-fca9-4b14-98e9-53ddcbb721b6
+```
+
+The access test independently confirmed authorization.
+
+**Lesson**
+
+RBAC troubleshooting should use the exact principal and exact resource scope whenever possible. Validate authorization with an actual operation when appropriate.
+
+---
+
+### Day 10 Troubleshooting Principle
+
+The Day 10 troubleshooting workflow followed:
+
+```text
+Identify Principal
+        ↓
+Identify Resource
+        ↓
+Identify Exact Scope
+        ↓
+Inspect Role Assignment
+        ↓
+Inspect Role Definition
+        ↓
+Determine Management/Data Plane
+        ↓
+Test Access
+        ↓
+Change Permissions Only When Required
+```
+
+This prevents unnecessary privilege escalation and reduces the risk of changing working infrastructure while troubleshooting.

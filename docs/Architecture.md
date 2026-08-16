@@ -419,3 +419,143 @@ This keeps **one evolving architecture document**, as per your documentation sta
 - Lifecycle Management
 - Storage Monitoring
 - Storage Security Hardening
+## Day 10 — Identity and RBAC Architecture
+
+Day 10 introduced the identity and authorization layer for the existing Azure infrastructure.
+
+### Identity Architecture
+
+```text
+Microsoft Entra Tenant
+│
+├── Current User
+│   ├── Global Administrator
+│   └── Azure Subscription Owner
+│
+└── VM-LINUX-01
+    └── System-Assigned Managed Identity
+        └── Service Principal
+```
+
+### Azure RBAC Architecture
+
+The existing user has subscription-level Owner assignments.
+
+```text
+Current User
+    │
+    └── Owner ×2
+        │
+        └── Azure Subscription
+              │
+              └── rg-az104-training
+```
+
+The VM managed identity has a deliberately narrower assignment:
+
+```text
+vm-linux-01
+    │
+    └── System-Assigned Managed Identity
+            │
+            └── Storage Blob Data Reader
+                    │
+                    └── staz104training01
+```
+
+### Storage Access Flow
+
+The managed identity access path is:
+
+```text
+vm-linux-01
+      │
+      ▼
+System-Assigned Managed Identity
+      │
+      ▼
+Microsoft Entra ID
+      │
+      ▼
+OAuth Access Token
+      │
+      ▼
+Azure Storage Data Plane
+      │
+      ▼
+staz104training01
+      │
+      ▼
+training-container/sample.txt
+      │
+      ▼
+HTTP 200
+```
+
+### Management Plane vs Data Plane
+
+The architecture separates Azure resource administration from data access.
+
+```text
+Management Plane
+    │
+    ├── Azure Resource Manager
+    ├── Resource configuration
+    └── Azure RBAC
+       
+Data Plane
+    │
+    └── Azure Storage
+        └── Blob data
+```
+
+The VM identity was granted:
+
+`Storage Blob Data Reader`
+
+rather than a broader management role.
+
+### Least-Privilege Boundary
+
+The Day 10 RBAC assignment is scoped only to:
+
+`staz104training01`
+
+The VM identity does not receive:
+
+* Subscription-level access
+* Resource-group-level Contributor access
+* Owner access
+* Storage Account Contributor access
+* Blob write access
+* Blob delete access
+
+This establishes a least-privilege authorization boundary between the VM and the storage data.
+
+### Authentication and Authorization
+
+The architecture separates two stages:
+
+**Authentication**
+
+```text
+VM Managed Identity
+        ↓
+Microsoft Entra ID
+        ↓
+Access Token
+```
+
+**Authorization**
+
+```text
+Access Token
+        ↓
+Azure RBAC
+        ↓
+Storage Blob Data Reader
+        ↓
+Storage Account Scope
+```
+
+This separation is a core Azure identity and access management principle.

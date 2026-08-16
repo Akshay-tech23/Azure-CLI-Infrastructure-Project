@@ -647,3 +647,89 @@ No Log Analytics Workspace, Action Group, VM Insights, NAT Gateway, or additiona
 ### Status
 
 **Day 09 — Completed**
+## Day 10 — Microsoft Entra ID and Azure RBAC
+
+**Status:** Completed
+
+### Topics Covered
+
+* Microsoft Entra tenant and user inspection
+* Entra groups and service principals
+* Microsoft Entra directory roles
+* Azure RBAC role assignments
+* RBAC scope and inheritance
+* Owner, Contributor, Reader
+* Virtual Machine Contributor
+* Storage Account Contributor
+* Storage Blob Data Reader
+* Storage Blob Data Contributor
+* Management plane vs data plane
+* System-assigned managed identities
+* Credential-free authentication
+* Least-privilege access
+* RBAC troubleshooting
+
+### Practical Implementation
+
+* Inspected the active Azure subscription and tenant.
+* Inspected the current Microsoft Entra user.
+* Inspected existing Entra users and groups.
+* Inspected resource-group RBAC assignments.
+* Identified two existing subscription-level Owner assignments.
+* Verified the system-assigned identity on `vm-linux-01`.
+* Confirmed the VM managed identity is represented as an Entra service principal.
+* Inspected existing storage-account RBAC assignments.
+* Compared management-plane and data-plane storage roles.
+* Assigned `Storage Blob Data Reader` to the VM managed identity at the `staz104training01` storage-account scope after explicit approval.
+* Obtained an Azure Storage access token from the VM through Instance Metadata Service.
+* Successfully read `training-container/sample.txt` using the VM managed identity.
+* Verified the Blob request returned HTTP `200`.
+* Inspected the `Global Administrator` Entra directory role.
+* Inspected existing service principals.
+
+### Security Focus
+
+Applied least-privilege principles by granting the VM identity only:
+
+`Storage Blob Data Reader`
+
+at:
+
+`staz104training01`
+
+No subscription-wide permissions were granted to the VM identity.
+
+No users or groups were created or deleted.
+
+No existing permissions were removed.
+
+### Troubleshooting
+
+Actual command-level issues encountered:
+
+* Incorrect use of multiple values with `az role definition list --name`.
+* Incorrect Object ID used during one RBAC inspection query.
+
+Both issues were diagnosed and corrected without changing infrastructure.
+
+### Evidence
+
+Strongest Day 10 verification:
+
+* VM managed identity successfully obtained an Azure Storage token.
+* VM managed identity successfully read `training-container/sample.txt`.
+* Blob request returned HTTP `200`.
+* Exact `Storage Blob Data Reader` assignment was verified at the storage-account scope.
+
+### Repository Artifacts
+
+```text
+labs/Day-10/
+├── Lab.md
+├── Notes.md
+├── Resource.md
+└── Verification.md
+
+scripts/azure-cli/
+└── Day-10.sh
+```
