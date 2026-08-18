@@ -2,7 +2,16 @@
 
 ## Overview
 
-This document records issues encountered during the Azure CLI Infrastructure Project and documents their root causes, diagnostic steps, and resolutions. It serves as a reusable knowledge base for future deployments and administration tasks.
+This document records issues encountered during the **Azure CLI Infrastructure Project** and documents their:
+
+* Symptoms
+* Investigation steps
+* Root causes
+* Resolutions
+* Verification procedures
+* Lessons learned
+
+It serves as a reusable troubleshooting knowledge base for future Azure Administrator and AZ-104 infrastructure tasks.
 
 ---
 
@@ -10,18 +19,130 @@ This document records issues encountered during the Azure CLI Infrastructure Pro
 
 For every issue, follow this structured approach:
 
-1. Identify the symptom.
-2. Collect relevant information.
-3. Verify infrastructure components.
-4. Determine the root cause.
-5. Apply the appropriate fix.
-6. Validate the resolution.
+```text
+1. Identify the symptom
+        ↓
+2. Collect relevant information
+        ↓
+3. Verify infrastructure components
+        ↓
+4. Determine the root cause
+        ↓
+5. Apply the appropriate fix
+        ↓
+6. Validate the resolution
+        ↓
+7. Document the lesson learned
+```
+
+The project follows a **verify-first** troubleshooting methodology.
 
 ---
 
-# Issue 1 - Azure CLI Not Found on Linux VM
+# Day 01 — Azure CLI and Resource Groups
 
-## Symptom
+## Troubleshooting Status
+
+No specific Day 01 infrastructure incident is recorded in the supplied project troubleshooting history.
+
+## Standard Diagnostic Commands
+
+```bash
+az account show
+az group list --output table
+az resource list --output table
+```
+
+## Troubleshooting Principle
+
+Before making any Azure change:
+
+1. Verify the active subscription.
+2. Verify the resource group.
+3. Inspect existing resources.
+4. Confirm the intended target resource.
+5. Only then perform the change.
+
+---
+
+# Day 02 — Virtual Networking and NSG
+
+## Troubleshooting Status
+
+No separate Day 02 incident is recorded in the supplied troubleshooting history.
+
+However, Day 02 networking concepts became important during the Day 04 HTTP connectivity troubleshooting.
+
+## Standard Diagnostic Commands
+
+```bash
+az network vnet list --output table
+
+az network vnet subnet list \
+  --resource-group rg-az104-training \
+  --vnet-name vnet-az104-training \
+  --output table
+
+az network nsg list --output table
+
+az network nsg rule list \
+  --resource-group rg-az104-training \
+  --nsg-name vm-linux-01NSG \
+  --output table
+```
+
+## Troubleshooting Principle
+
+Do not assume that a configured NSG is the NSG actually affecting the VM.
+
+Always verify the NIC association and effective security rules.
+
+---
+
+# Day 03 — Virtual Machines and Managed Disks
+
+## Troubleshooting Status
+
+No separate Day 03 incident is recorded in the supplied troubleshooting history.
+
+## Standard VM Diagnostics
+
+```bash
+az vm show \
+  --resource-group rg-az104-training \
+  --name vm-linux-01 \
+  --show-details
+```
+
+## Standard Disk Diagnostics
+
+```bash
+az disk list --output table
+
+az vm disk list \
+  --resource-group rg-az104-training \
+  --name vm-linux-01
+```
+
+## Troubleshooting Principle
+
+When diagnosing VM problems, inspect both:
+
+```text
+Azure VM Configuration
+        ↓
+Guest Operating System
+```
+
+A problem may originate from either the Azure infrastructure layer or the Linux guest layer.
+
+---
+
+# Day 04 — Linux, Nginx and VM Connectivity
+
+## Issue 01 — Azure CLI Not Found on Linux VM
+
+### Symptom
 
 Attempting to run Azure CLI commands inside the Linux VM resulted in:
 
@@ -29,308 +150,326 @@ Attempting to run Azure CLI commands inside the Linux VM resulted in:
 az: command not found
 ```
 
-## Root Cause
+### Root Cause
 
 Azure CLI is not installed by default on Ubuntu virtual machines.
 
-Azure CLI commands should be executed from:
+Azure CLI administration should normally be performed from:
 
-- Azure Cloud Shell
-- A local machine with Azure CLI installed
+* Azure Cloud Shell
+* A local machine with Azure CLI installed
 
-The Linux VM is intended for operating system administration, not Azure resource management.
+The Linux VM is primarily used for operating-system and application administration.
 
-## Resolution
+### Resolution
 
-Exited the SSH session and executed Azure CLI commands from Azure Cloud Shell.
+Exit the SSH session:
 
 ```bash
 exit
 ```
 
-## Verification
+Then execute Azure CLI commands from Azure Cloud Shell.
+
+### Verification
 
 ```bash
 az account show
 ```
 
-Expected Result
+### Expected Result
 
 Azure account information is displayed successfully.
 
-Status
+### Status
 
 ✅ Resolved
 
 ---
 
-# Issue 2 - HTTP Website Not Accessible
+# Issue 02 — HTTP Website Not Accessible
 
 ## Symptom
 
-Opening the VM public IP in a browser returned:
+Opening the VM public IP in a browser resulted in:
 
-- Website unavailable
-- Connection timed out
+* Website unavailable
+* Connection timeout
 
 ## Investigation
 
-The following checks were performed.
-
-### Verify Nginx Service
+### Step 1 — Verify Nginx
 
 ```bash
 systemctl status nginx
 ```
 
-Result
+Result:
 
-```
+```text
 Active (running)
 ```
 
----
-
-### Verify Listening Port
+### Step 2 — Verify Port 80
 
 ```bash
 ss -tuln | grep :80
 ```
 
-Result
+Result:
 
-```
+```text
 0.0.0.0:80
 ```
 
----
-
-### Verify Local HTTP
+### Step 3 — Test Local HTTP
 
 ```bash
 curl http://localhost
 ```
 
-Result
+The default Nginx page was returned successfully.
 
-Successfully returned the default Nginx page.
-
----
-
-### Verify Ubuntu Firewall
+### Step 4 — Verify Ubuntu Firewall
 
 ```bash
 sudo ufw status
 ```
 
-Result
+Result:
 
-```
+```text
 inactive
 ```
 
----
-
-### Verify Effective Network Security Group
+### Step 5 — Verify Effective NSG
 
 ```bash
 az network nic list-effective-nsg \
---resource-group rg-az104-training \
---name vm-linux-01VMNic
+  --resource-group rg-az104-training \
+  --name vm-linux-01VMNic
 ```
 
 ## Root Cause
 
 The HTTP rule had been created in:
 
-```
+```text
 nsg-az104-training
 ```
 
-However, the virtual machine was associated with:
+However, the VM was associated with:
 
-```
+```text
 vm-linux-01NSG
 ```
 
-Therefore, the inbound HTTP rule was never applied to the VM.
+Therefore, the HTTP rule was not being applied to the VM.
 
 ## Resolution
 
-Created the HTTP rule in the correct Network Security Group.
+Created the HTTP rule in the correct NSG:
 
 ```bash
 az network nsg rule create \
---resource-group rg-az104-training \
---nsg-name vm-linux-01NSG \
---name Allow-HTTP \
---priority 1100 \
---direction Inbound \
---access Allow \
---protocol Tcp \
---destination-port-ranges 80
+  --resource-group rg-az104-training \
+  --nsg-name vm-linux-01NSG \
+  --name Allow-HTTP \
+  --priority 1100 \
+  --direction Inbound \
+  --access Allow \
+  --protocol Tcp \
+  --destination-port-ranges 80
 ```
 
 ## Verification
 
-Opened:
+The Nginx page was successfully accessed through the VM public IP.
 
-```
-http://98.70.41.38
-```
+Expected result:
 
-Successfully displayed:
-
-```
+```text
 Welcome to nginx!
 ```
 
-Status
+### Status
 
 ✅ Resolved
 
+## Lesson Learned
+
+A service can be correctly configured inside the VM while remaining inaccessible externally because of an Azure networking configuration issue.
+
+Always validate:
+
+```text
+Nginx
+ ↓
+Port 80
+ ↓
+Linux Firewall
+ ↓
+NIC
+ ↓
+NSG
+ ↓
+Public IP
+ ↓
+External Connectivity
+```
+
 ---
 
-# Issue 3 - Pending Kernel Upgrade
+# Issue 03 — Pending Kernel Upgrade
 
 ## Symptom
 
-After upgrading packages, Ubuntu reported:
+After upgrading Ubuntu packages, the system reported:
 
-```
+```text
 Pending kernel upgrade
 ```
 
 ## Root Cause
 
-Linux cannot replace the running kernel while the operating system is active.
+Linux cannot replace the currently running kernel while it is active.
 
-The updated kernel is installed on disk but only becomes active after a reboot.
+The updated kernel is installed on disk but becomes active only after reboot.
 
 ## Resolution
 
 No immediate action was taken.
 
-The reboot should be scheduled during a planned maintenance window to avoid disrupting users.
+A reboot should be performed during a planned maintenance window.
 
 ## Verification
 
-Future verification:
+After the maintenance reboot:
 
 ```bash
 uname -r
 ```
 
-Compare the running kernel version with the installed version after reboot.
+Compare the running kernel version with the installed kernel version.
 
-Status
+### Status
 
-✅ Understood (No Immediate Action Required)
-
----
-
-# Best Practices Learned
-
-- Always verify which Network Security Group is effectively applied to a VM before modifying firewall rules.
-- Test services locally before investigating external connectivity.
-- Separate Azure infrastructure administration from Linux operating system administration.
-- Validate every configuration change using appropriate verification commands.
-- Schedule kernel reboots during maintenance windows rather than immediately after updates.
-- Use Azure CLI and diagnostic commands to identify the root cause instead of relying on assumptions.
+✅ Understood — No Immediate Action Required
 
 ---
 
-# Common Diagnostic Commands
+# Day 04 — SSH Private Key Permission Denied
 
-## Azure
+## Issue
 
-```bash
-az account show
-```
+SSH connection to the Linux VM failed because the private key file had insecure Windows file permissions.
 
-```bash
-az vm show \
---resource-group rg-az104-training \
---name vm-linux-01 \
---show-details
-```
+## Resolution
 
-```bash
-az network nic list-effective-nsg \
---resource-group rg-az104-training \
---name vm-linux-01VMNic
-```
+The following steps were performed:
 
-```bash
-az network nsg rule list \
---resource-group rg-az104-training \
---nsg-name vm-linux-01NSG \
---output table
-```
+1. Moved the SSH key into the local `.ssh` directory.
+2. Removed inherited permissions.
+3. Restricted access to the current Windows user.
+4. Reconnected successfully using the corrected key.
+
+## Lesson Learned
+
+SSH private keys must be appropriately protected.
+
+On Windows, verify file permissions before troubleshooting the Azure VM itself.
+
+### Status
+
+✅ Resolved
 
 ---
 
-## Linux
+# Day 05 — Identity and Access Management
 
-```bash
-systemctl status nginx
-```
+## Troubleshooting Status
 
-```bash
-ss -tuln
-```
+Day 05 introduced Microsoft Entra ID, Azure RBAC and Managed Identity.
 
-```bash
-curl http://localhost
-```
-
-```bash
-sudo ufw status
-```
-
-```bash
-journalctl -u nginx
-```
+The detailed RBAC-related troubleshooting cases are documented in the later storage and identity sections because the same authorization concepts were encountered while accessing Azure Storage.
 
 ---
 
-# Lessons Learned
+# Day 05 — Azure Storage RBAC Propagation Delay
 
-The most significant lesson from Day 04 was that a correctly configured service may still be inaccessible if the underlying network configuration is incorrect.
+## Issue
 
-Effective troubleshooting requires validating every layer of the stack:
+Blob Storage operations using Microsoft Entra ID returned authorization errors immediately after assigning:
 
-1. Operating System
-2. Application Service
-3. Listening Port
-4. Local Connectivity
-5. Firewall Configuration
-6. Network Security Group
-7. Public Network Access
+```text
+Storage Blob Data Contributor
+```
 
-Following a structured troubleshooting process helps identify the true root cause efficiently and avoids unnecessary configuration changes.
+## Investigation
 
-# Troubleshooting Guide
+Verified the role assignment:
 
-This document records actual issues encountered during the Azure AZ-104 Infrastructure Project, including their causes, troubleshooting process, and resolutions.
+```bash
+az role assignment list \
+  --assignee <USER_OBJECT_ID> \
+  --all \
+  --output table
+```
+
+The required role assignment existed.
+
+## Root Cause
+
+Azure RBAC changes may require propagation before they become effective.
+
+Existing Azure CLI authentication tokens may also have been issued before the new role assignment.
+
+## Resolution
+
+Refresh the Azure Storage access token:
+
+```bash
+az account get-access-token \
+  --resource https://storage.azure.com/
+```
+
+Then retry the operation.
+
+## Verification
+
+The Blob Storage operation succeeded.
+
+### Status
+
+✅ Resolved
+
+## Lesson Learned
+
+Azure RBAC troubleshooting should distinguish between:
+
+```text
+Role Assignment
+        +
+Token / Authentication State
+        +
+RBAC Propagation
+```
+
+Do not immediately switch to storage account keys when a newly assigned role appears ineffective.
 
 ---
 
-# Issue 01 – Azure Storage Blob Upload Authorization Failure
+# Day 06 — Azure Storage
 
-## Module
+## Issue 01 — Blob Upload Authorization Failure
 
-Day 06 – Azure Storage Administration
-
----
-
-## Problem
+### Symptom
 
 Uploading a blob using Microsoft Entra ID authentication failed.
 
-Command executed:
+Command:
 
-```bash id="ex7lqk"
+```bash
 az storage blob upload \
   --account-name staz104training01 \
   --container-name training-container \
@@ -341,28 +480,15 @@ az storage blob upload \
 
 Error:
 
-```text id="eg5it8"
+```text
 You do not have the required permissions needed to perform this operation.
 ```
 
----
-
-## Symptoms
-
-* Blob container creation succeeded.
-* Blob upload failed.
-* Microsoft Entra authentication was being used.
-* Storage account deployment completed successfully.
-
----
-
 ## Investigation
 
-### Step 1
+Checked the signed-in user's RBAC assignments:
 
-Verified Azure RBAC assignments.
-
-```bash id="mvnmlk"
+```bash
 az role assignment list \
   --assignee $(az ad signed-in-user show --query id -o tsv) \
   --scope $(az storage account show \
@@ -372,17 +498,19 @@ az role assignment list \
   --output table
 ```
 
-Result:
+No Storage Blob Data role was initially present.
 
-No Storage Blob Data role assignment was present.
+## Resolution
 
----
+Assigned:
 
-### Step 2
+```text
+Storage Blob Data Contributor
+```
 
-Assigned the required Azure RBAC role.
+using:
 
-```bash id="5qtdut"
+```bash
 az role assignment create \
   --assignee $(az ad signed-in-user show --query id -o tsv) \
   --role "Storage Blob Data Contributor" \
@@ -392,193 +520,126 @@ az role assignment create \
       --query id -o tsv)
 ```
 
-The role assignment completed successfully.
+The token was then refreshed:
 
----
-
-### Step 3
-
-Retried the upload.
-
-The upload still failed with the same authorization error.
-
----
-
-### Step 4
-
-Verified the new role assignment.
-
-Azure confirmed:
-
-```text id="7q7bks"
-Storage Blob Data Contributor
-```
-
-was correctly assigned to the signed-in user.
-
----
-
-### Root Cause
-
-The Azure CLI was using an existing Microsoft Entra access token that had been issued before the new Azure RBAC assignment became effective.
-
-Although the role assignment existed, the cached access token did not yet contain the updated authorization information.
-
----
-
-## Resolution
-
-Requested a new Azure Storage access token.
-
-```bash id="gm0qem"
+```bash
 az account get-access-token \
-    --resource https://storage.azure.com/
+  --resource https://storage.azure.com/
 ```
-
-After refreshing the token, the blob upload command succeeded without requiring storage account keys.
-
----
 
 ## Verification
 
-Successful upload:
+The blob upload succeeded using Microsoft Entra ID authentication without storage account keys.
 
-* Blob uploaded successfully.
-* Server-side encryption enabled.
-* Microsoft Entra authentication used.
-* No storage account keys required.
+### Status
 
----
+✅ Resolved
 
-## Lessons Learned
+## Lesson Learned
 
-* Azure Storage uses separate management-plane and data-plane authorization.
-* Azure RBAC assignments may require propagation before becoming effective.
-* Existing Azure CLI access tokens may need to be refreshed after new role assignments.
-* Microsoft Entra ID with Azure RBAC is the preferred authentication method for Azure Storage.
-* Avoid switching to storage account keys before verifying RBAC configuration and refreshing authentication.
+Azure Storage has separate:
+
+* Management-plane authorization
+* Data-plane authorization
+
+A user may have permission to manage a storage account but still lack permission to read or write blob data.
 
 ---
 
-# Best Practices
+# Day 07 — Azure Files and Storage Protection
 
-* Assign the minimum Azure RBAC role required.
-* Verify role assignments before troubleshooting authentication.
-* Refresh the Azure Storage access token after creating new RBAC assignments.
-* Use Microsoft Entra ID instead of storage account keys whenever possible.
-* Validate access using Azure CLI before testing application connectivity.
+## Issue 01 — Azure Files OAuth Authentication
 
----
+### Symptom
 
-# Summary
+Azure Files operations using:
 
-| Item                   | Status |
-| ---------------------- | ------ |
-| Issue Identified       | ✅      |
-| Root Cause Determined  | ✅      |
-| Azure RBAC Verified    | ✅      |
-| Access Token Refreshed | ✅      |
-| Blob Upload Successful | ✅      |
-| Lab Completed          | ✅      |
+```bash
+--auth-mode login
+```
 
-This troubleshooting exercise demonstrates a common enterprise Azure Storage authorization scenario and reinforces the distinction between Azure RBAC configuration and authentication token lifecycle management.
-# Troubleshooting Guide
+returned authorization errors despite assigning:
 
-## Day 04 – SSH Private Key Permission Denied
+```text
+Storage File Data SMB Share Contributor
+```
 
-### Issue
+## Investigation
 
-SSH connection to the Linux Virtual Machine failed because the private key file had insecure permissions.
+Verified the RBAC assignment at the storage account scope.
 
-### Resolution
+The Azure CLI authentication token was refreshed.
 
-* Moved the SSH key to the local `.ssh` directory.
-* Removed inherited permissions.
-* Granted read access only to the current user.
-* Reconnected successfully using the updated key permissions.
+## Resolution
 
----
+The required role assignment was confirmed.
 
-## Day 05 – Azure Storage RBAC Propagation Delay
+For the Azure Files administrative operation, Shared Key authentication was used because OAuth-based Azure CLI support for the specific operation was limited.
 
-### Issue
+## Verification
 
-Blob Storage operations using Microsoft Entra ID returned authorization errors immediately after assigning the **Storage Blob Data Contributor** role.
+Azure Files operations completed successfully.
 
-### Resolution
+### Status
 
-* Verified the RBAC role assignment.
-* Refreshed the Azure CLI access token.
-* Waited for Azure RBAC propagation.
-* Retried the operation successfully.
+✅ Resolved
+
+## Lesson Learned
+
+Authentication mechanisms differ across Azure Storage data services and CLI operations.
+
+Do not assume that an authentication mode supported for Blob Storage will behave identically for every Azure Files operation.
 
 ---
 
-## Day 07 – Azure Files OAuth Authentication
+# Issue 02 — Azure CLI File Download Destination
 
-### Issue
+## Symptom
 
-Azure CLI file operations using Microsoft Entra ID (`--auth-mode login`) returned authorization errors even after assigning the **Storage File Data SMB Share Contributor** role.
-
-### Resolution
-
-* Verified the RBAC role assignment at the storage account scope.
-* Refreshed the Azure CLI authentication token.
-* Confirmed the required role assignment.
-* Used Shared Key authentication for Azure Files operations, which completed successfully.
-
----
-
-## Day 07 – Azure CLI File Download Destination
-
-### Issue
-
-Downloading a file with:
+The following destination was used:
 
 ```bash
 --dest downloaded-sample-file.txt
 ```
 
-returned:
+The CLI returned an error similar to:
 
-```
+```text
 [Errno 2] No such file or directory:
 'downloaded-sample-file.txt/sample-file.txt'
 ```
 
-### Resolution
+## Root Cause
 
-The Azure CLI interpreted `--dest` as a destination directory rather than a filename.
+The Azure CLI interpreted `--dest` as a destination directory rather than as a filename.
 
-Downloaded the file successfully using:
+## Resolution
+
+Used:
 
 ```bash
 --dest .
 ```
 
-which saved the file in the current working directory.
+This downloaded the file into the current working directory.
+
+## Lesson Learned
+
+Always verify how Azure CLI interprets path-related parameters.
+
+Check command syntax before assuming an Azure resource configuration problem.
+
+### Status
+
+✅ Resolved
 
 ---
 
-## Best Practices
+# Day 08 — Advanced Azure Networking
 
-* Verify Azure RBAC assignments before troubleshooting permissions.
-* Allow sufficient time for Azure RBAC propagation after creating role assignments.
-* Refresh Azure CLI authentication tokens after RBAC changes.
-* Validate Azure CLI command syntax and parameter behavior before assuming configuration issues.
-* Use Shared Key authentication for Azure Files administrative operations when OAuth-based Azure CLI support is limited.
+## Issue 01 — VM Run Command Failure
 
-# Day 08 — Troubleshooting Guide
-
-## Azure VM Networking Troubleshooting
-
-This guide documents the troubleshooting techniques practiced with the Azure Linux VM `vm-linux-01`.
-
----
-
-## 1. VM Run Command Fails
-
-### Check
+### Diagnostic Command
 
 ```bash
 az vm run-command invoke \
@@ -588,9 +649,11 @@ az vm run-command invoke \
   --scripts "hostname"
 ```
 
-### Verify
+## Verification
 
-Look for:
+Check the command execution/provisioning state.
+
+Expected successful state:
 
 ```text
 ProvisioningState/succeeded
@@ -600,25 +663,21 @@ If the command succeeds, Azure can communicate with the VM through the Run Comma
 
 ---
 
-## 2. DNS Resolution Problem
+# Issue 02 — DNS Resolution Problem
 
-### Test
+## Test
+
+From the VM:
 
 ```bash
 getent ahostsv4 www.microsoft.com
 ```
 
-### Expected
+## Expected Result
 
 An IPv4 address should be returned.
 
-Example:
-
-```text
-23.222.248.100
-```
-
-### Troubleshooting
+## Troubleshooting
 
 Check:
 
@@ -631,15 +690,15 @@ Then verify outbound connectivity.
 
 ---
 
-## 3. VM Has No Network Connectivity
+# Issue 03 — VM Has No Network Connectivity
 
-### Check the routing table
+## Check Routing Table
 
 ```bash
 ip route
 ```
 
-Expected:
+Expected default route:
 
 ```text
 default via 10.0.2.1 dev eth0
@@ -650,7 +709,7 @@ The default route is required for traffic outside the local subnet.
 
 ---
 
-## 4. Check VM IP Configuration
+# Issue 04 — VM IP Configuration
 
 From Azure:
 
@@ -663,7 +722,7 @@ az vm show \
   -o table
 ```
 
-Check:
+Verify:
 
 * Private IP
 * Public IP
@@ -671,7 +730,7 @@ Check:
 
 ---
 
-## 5. Check NIC Configuration
+# Issue 05 — NIC Configuration
 
 ```bash
 az network nic show \
@@ -689,7 +748,7 @@ Verify:
 
 ---
 
-## 6. Check NSG Rules
+# Issue 06 — NSG Rules
 
 ```bash
 az network nsg rule list \
@@ -698,20 +757,18 @@ az network nsg rule list \
   -o table
 ```
 
-For this lab, the important rules were:
+Important rules:
 
 ```text
 TCP 22 → SSH  → Allow
 TCP 80 → HTTP → Allow
 ```
 
-If a required port is blocked, check the NSG before troubleshooting the application.
+If a required port is blocked, inspect the NSG before troubleshooting the application.
 
 ---
 
-## 7. Check Effective NSG Rules
-
-Use:
+# Issue 07 — Effective NSG Rules
 
 ```bash
 az network nic list-effective-nsg \
@@ -720,29 +777,31 @@ az network nic list-effective-nsg \
   -o json
 ```
 
-Do not rely only on the configured NSG rules.
+## Lesson
 
-**Effective security rules** show what is actually applied to the NIC, including default rules.
+Do not rely only on configured NSG rules.
+
+Effective security rules show what is actually applied to the NIC, including default rules.
 
 ---
 
-## 8. HTTP Service Not Working
+# Issue 08 — HTTP Service Not Working
 
-### Check whether anything is listening
+## Check Listening Ports
 
 ```bash
 ss -tulpn
 ```
 
-For this VM:
+For the project VM:
 
 ```text
 0.0.0.0:80 → nginx
 ```
 
-If nothing is listening on port 80, investigate the web server.
+If nothing is listening on port 80, investigate Nginx.
 
-### Test locally
+## Test Locally
 
 ```bash
 curl -I http://localhost
@@ -754,16 +813,16 @@ Expected:
 HTTP/1.1 200 OK
 ```
 
-If localhost works but the public IP does not, investigate Azure networking/NSG configuration.
+If localhost works but public connectivity fails, investigate Azure networking.
 
 ---
 
-## 9. Test External HTTP Connectivity
+# Issue 09 — External HTTP Connectivity
 
 From Cloud Shell:
 
 ```bash
-curl -I http://98.70.41.38
+curl -I http://<PUBLIC_IP>
 ```
 
 Expected:
@@ -772,7 +831,7 @@ Expected:
 HTTP/1.1 200 OK
 ```
 
-If the local test works but the external test fails, check:
+If local connectivity works but external connectivity fails, check:
 
 1. Public IP association
 2. NIC
@@ -783,15 +842,13 @@ If the local test works but the external test fails, check:
 
 ---
 
-## 10. Check Listening Services
-
-Use:
+# Issue 10 — Listening Services
 
 ```bash
 ss -tulpn
 ```
 
-Important ports from this lab:
+Important project ports:
 
 ```text
 22 → sshd
@@ -800,22 +857,16 @@ Important ports from this lab:
 323 → chronyd
 ```
 
-This command helps determine whether a service is actually listening before investigating Azure networking.
+This verifies whether the service is actually listening before investigating Azure networking.
 
 ---
 
-## 11. Test Outbound HTTPS
+# Issue 11 — Outbound HTTPS Connectivity
 
-Run from the VM:
+From the VM:
 
 ```bash
 curl -I https://www.microsoft.com
-```
-
-Expected:
-
-```text
-HTTP/2 200
 ```
 
 If this fails, investigate:
@@ -828,35 +879,35 @@ If this fails, investigate:
 
 ---
 
-# Troubleshooting Decision Flow
+# Day 08 — Troubleshooting Decision Flow
 
 Use this order when troubleshooting Azure VM connectivity:
 
 ```text
-1. Is the VM running?
-          ↓
-2. Does the VM have a valid IP configuration?
-          ↓
-3. Is the NIC attached correctly?
-          ↓
-4. Is the subnet correct?
-          ↓
-5. Does the NSG allow the required traffic?
-          ↓
-6. What are the effective NSG rules?
-          ↓
-7. Is the required port listening?
-          ↓
-8. Is the application/service running?
-          ↓
-9. Does localhost work?
-          ↓
-10. Does external connectivity work?
+Is the VM running?
+        ↓
+Does the VM have a valid IP configuration?
+        ↓
+Is the NIC attached correctly?
+        ↓
+Is the subnet correct?
+        ↓
+Does the NSG allow the required traffic?
+        ↓
+What are the effective NSG rules?
+        ↓
+Is the required port listening?
+        ↓
+Is the application/service running?
+        ↓
+Does localhost work?
+        ↓
+Does external connectivity work?
 ```
 
 ## Key Principle
 
-Always troubleshoot from the **network layer toward the application layer**.
+Troubleshoot from the **network layer toward the application layer**:
 
 ```text
 DNS
@@ -874,16 +925,17 @@ Service
 Application
 ```
 
-This structured approach helps identify whether a problem is caused by Azure networking, Linux networking, a firewall/security rule, or the application itself.
+### Status
 
-## Day 08 Troubleshooting Status
+✅ Day 08 Troubleshooting Completed
 
-**Completed successfully ✅**
-## Day 09 Troubleshooting
+---
 
-### 1. Azure Monitor Metric Name Mismatch
+# Day 09 — Azure Monitor and Operational Troubleshooting
 
-**Symptom**
+## Issue 01 — Azure Monitor Metric Name Mismatch
+
+### Symptom
 
 The following metric query failed:
 
@@ -891,22 +943,36 @@ The following metric query failed:
 VM Availability Metric
 ```
 
-Azure returned a `BadRequest` and reported that the valid metric name was:
+Azure returned a `BadRequest`.
+
+The valid metric name was:
 
 ```text
 VmAvailabilityMetric
 ```
 
-**Root Cause**
+## Root Cause
 
-The Azure Monitor metric had a different API metric name from its display name.
+Azure Monitor has a distinction between:
 
-* Display Name: `VM Availability Metric`
-* Metric Name: `VmAvailabilityMetric`
+* Human-readable metric display name
+* API metric name
 
-**Resolution**
+Display name:
 
-The query was changed to:
+```text
+VM Availability Metric
+```
+
+Metric name:
+
+```text
+VmAvailabilityMetric
+```
+
+## Resolution
+
+Used the actual metric name:
 
 ```bash
 az monitor metrics list \
@@ -919,21 +985,21 @@ az monitor metrics list \
   --output table
 ```
 
-**Result**
+## Result
 
 ```text
 VM Availability Metric    1.0
 ```
 
-**Lesson**
+## Lesson Learned
 
-When using Azure Monitor CLI/API commands, distinguish between the human-readable metric display name and the actual API metric name.
+When using Azure Monitor CLI/API operations, always distinguish between the display name and the actual API metric name.
 
 ---
 
-### 2. Resource Health REST API Version Error
+# Issue 02 — Resource Health REST API Version Error
 
-**Symptom**
+## Symptom
 
 The initial Resource Health REST request returned:
 
@@ -941,11 +1007,13 @@ The initial Resource Health REST request returned:
 InvalidResourceType
 ```
 
-The requested API version did not support the `events` resource type in the way the request expected.
+## Root Cause
 
-**Diagnosis**
+The requested API version did not support the `events` resource type in the expected way.
 
-The supported Resource Health provider resource types were inspected:
+## Diagnosis
+
+Inspected the supported Resource Health provider resource types:
 
 ```bash
 az provider show \
@@ -960,29 +1028,42 @@ The environment reported:
 events    2025-05-01-rc
 ```
 
-**Resolution**
+## Resolution
 
-The REST request was retried using the supported API version:
+The REST request was retried using:
 
 ```text
 2025-05-01-rc
 ```
 
-The request then completed successfully with no active events returned.
+The request completed successfully with no active events returned.
 
-**Lesson**
+## Lesson Learned
 
-For Azure REST operations, verify the provider's supported resource types and API versions instead of assuming an API version.
+For Azure REST operations:
+
+1. Inspect the provider.
+2. Verify the resource type.
+3. Verify supported API versions.
+4. Use a supported API version.
+
+Do not assume that an API version applies to every Azure resource type.
 
 ---
 
-### 3. Missing `/data` Data Disk
+# Issue 03 — Missing `/data` Data Disk
 
-**Symptom**
+## Symptom
 
-The previously documented 16 GB data disk mounted at `/data` was not visible inside the Linux VM.
+The previously documented 16 GB data disk mounted at:
 
-**Evidence**
+```text
+/data
+```
+
+was not visible inside the Linux VM.
+
+## Evidence
 
 ```bash
 df -h
@@ -1000,9 +1081,9 @@ returned no result.
 lsblk -f
 ```
 
-showed only the OS disk (`sda`) and no `sdb`.
+showed only the OS disk and no `sdb`.
 
-The Azure VM configuration was then checked:
+## Azure Verification
 
 ```bash
 az vm show \
@@ -1014,35 +1095,41 @@ az vm show \
 
 No data disks were returned.
 
-**Root Cause**
+## Root Cause
 
-The 16 GB managed data disk previously documented for `/data` is currently not attached to `vm-linux-01`.
+The 16 GB managed data disk previously documented for `/data` was not currently attached to `vm-linux-01`.
 
-**Resolution**
+## Resolution
 
 No remediation was performed during Day 09.
 
-The issue was deliberately left unchanged because the lab scope prohibits unnecessary infrastructure changes and the objective was monitoring and diagnosis.
+The discrepancy was deliberately left unchanged because the lab objective was monitoring and diagnosis and unnecessary infrastructure changes were avoided.
 
-**Lesson**
+## Lesson Learned
 
-Troubleshoot storage issues from both sides:
+Storage troubleshooting should inspect all layers:
 
 ```text
-Azure VM configuration
+Azure VM Configuration
         ↓
-Guest block devices
+Guest Block Devices
         ↓
 Filesystem
         ↓
-Mount point
+Mount Point
 ```
 
-## Day 10 — Microsoft Entra ID and Azure RBAC
+### Status
 
-### Issue 1 — Multiple Role Names with `az role definition list`
+✅ Diagnosed — No Unnecessary Infrastructure Change
 
-**Symptom**
+---
+
+# Day 10 — Microsoft Entra ID and Azure RBAC
+
+## Issue 01 — Multiple Role Names with `az role definition list`
+
+### Symptom
 
 The following approach failed:
 
@@ -1053,30 +1140,33 @@ az role definition list --name "Storage Account Contributor" "Storage Blob Data 
 Azure CLI returned:
 
 ```text
-unrecognized arguments: Storage Blob Data Reader Storage Blob Data Contributor
+unrecognized arguments:
+Storage Blob Data Reader
+Storage Blob Data Contributor
 ```
 
-**Root Cause**
+## Root Cause
 
 The `--name` parameter was not being used as a multi-value argument.
 
-**Resolution**
+## Resolution
 
-Used a single role-definition query and filtered the required roles with JMESPath:
+Used a JMESPath query to filter the role definitions:
 
-```text
-az role definition list --query "[?roleName=='Storage Account Contributor' || roleName=='Storage Blob Data Reader' || roleName=='Storage Blob Data Contributor']"
+```bash
+az role definition list \
+  --query "[?roleName=='Storage Account Contributor' || roleName=='Storage Blob Data Reader' || roleName=='Storage Blob Data Contributor']"
 ```
 
-**Lesson**
+## Lesson Learned
 
-When multiple Azure RBAC role definitions need to be inspected, use a collection query with filtering rather than supplying multiple values to a single `--name` parameter.
+When multiple Azure RBAC role definitions need to be inspected, use collection filtering rather than passing multiple values to a single `--name` parameter.
 
 ---
 
-### Issue 2 — Azure CLI Not Installed on VM
+# Issue 02 — Azure CLI Not Installed on VM
 
-**Symptom**
+## Symptom
 
 A VM Run Command test attempted to execute:
 
@@ -1090,25 +1180,35 @@ The VM returned:
 az: not found
 ```
 
-**Root Cause**
+## Root Cause
 
-Azure CLI was not installed inside `vm-linux-01`.
+Azure CLI was not installed inside:
 
-**Resolution**
+```text
+vm-linux-01
+```
 
-Azure CLI was not installed because doing so would introduce an unnecessary VM modification.
+## Resolution
 
-Instead, the VM's existing managed identity was tested directly through the Azure Instance Metadata Service.
+Azure CLI was intentionally not installed.
 
-**Lesson**
+Installing it would have introduced an unnecessary VM modification.
 
-Do not modify a production-like VM simply to satisfy a diagnostic test when an existing platform capability can provide the required evidence.
+Instead, the existing VM Managed Identity was tested directly through the Azure Instance Metadata Service.
+
+## Lesson Learned
+
+Do not modify a production-like VM simply to satisfy a diagnostic test when an existing Azure platform capability can provide the required evidence.
+
+### Status
+
+✅ Resolved Without Unnecessary VM Modification
 
 ---
 
-### Issue 3 — Incorrect Object ID During RBAC Inspection
+# Issue 03 — Incorrect Object ID During RBAC Inspection
 
-**Symptom**
+## Symptom
 
 An RBAC query returned:
 
@@ -1116,41 +1216,37 @@ An RBAC query returned:
 Cannot find user or service principal in graph database
 ```
 
-**Root Cause**
+## Root Cause
 
-An incorrect principal Object ID was supplied.
+An incorrect security principal Object ID was supplied.
 
-The verified identities were:
+## Resolution
 
-```text
-User Object ID:
-5b20d537-fccf-4933-a212-432199f8f485
+The correct principal was verified before repeating the RBAC query.
 
-VM Managed Identity Principal ID:
-5cd94e29-8c3a-4124-a17d-44f815094dc6
-```
-
-**Resolution**
-
-The correct user Object ID was used with:
+Use:
 
 ```text
 --assignee-object-id
 ```
 
-The VM managed identity was verified separately using its own principal ID.
+with the verified principal Object ID.
 
-**Lesson**
+The VM Managed Identity principal must be treated separately from the user identity.
 
-Always verify the security principal before troubleshooting RBAC. Do not assume that a failed authorization query means the role assignment is missing.
+## Lesson Learned
+
+Always verify the security principal before troubleshooting RBAC.
+
+A failed authorization query does not automatically mean that the role assignment is missing.
 
 ---
 
-### Issue 4 — Broad Managed Identity RBAC Query Returned No Rows
+# Issue 04 — Broad Managed Identity RBAC Query Returned No Rows
 
-**Symptom**
+## Symptom
 
-A broad role-assignment query for the VM managed identity returned no rows.
+A broad role-assignment query for the VM Managed Identity returned no rows.
 
 However, a previously verified storage-account-scoped query showed:
 
@@ -1158,17 +1254,17 @@ However, a previously verified storage-account-scoped query showed:
 Storage Blob Data Reader
 ```
 
-and the VM successfully accessed the Blob with:
+The VM also successfully accessed Blob Storage with:
 
 ```text
 HTTP_STATUS:200
 ```
 
-**Root Cause**
+## Root Cause
 
-The broad query did not provide reliable evidence for the resource-scoped assignment.
+The broad query did not provide reliable evidence for the resource-scoped role assignment.
 
-**Resolution**
+## Resolution
 
 The exact storage-account scope was queried using:
 
@@ -1176,28 +1272,24 @@ The exact storage-account scope was queried using:
 --assignee-object-id
 ```
 
-The assignment was confirmed:
-
-```text
-Role:
-Storage Blob Data Reader
-
-Scope:
-staz104training01
-
-Assignment ID:
-5f00d148-fca9-4b14-98e9-53ddcbb721b6
-```
+The role assignment was confirmed at the storage-account scope.
 
 The access test independently confirmed authorization.
 
-**Lesson**
+## Lesson Learned
 
-RBAC troubleshooting should use the exact principal and exact resource scope whenever possible. Validate authorization with an actual operation when appropriate.
+RBAC troubleshooting should use:
+
+* Exact principal
+* Exact resource
+* Exact scope
+* Exact role
+
+Whenever possible, validate authorization using an actual access operation.
 
 ---
 
-### Day 10 Troubleshooting Principle
+# Day 10 — RBAC Troubleshooting Principle
 
 The Day 10 troubleshooting workflow followed:
 
@@ -1212,11 +1304,407 @@ Inspect Role Assignment
         ↓
 Inspect Role Definition
         ↓
-Determine Management/Data Plane
+Determine Management Plane / Data Plane
         ↓
 Test Access
         ↓
 Change Permissions Only When Required
 ```
 
-This prevents unnecessary privilege escalation and reduces the risk of changing working infrastructure while troubleshooting.
+This approach prevents:
+
+* Unnecessary privilege escalation
+* Incorrect RBAC changes
+* Misdiagnosis of authorization failures
+* Modification of working infrastructure
+
+---
+
+# Common Azure Diagnostic Commands
+
+## Subscription
+
+```bash
+az account show
+```
+
+## VM
+
+```bash
+az vm show \
+  --resource-group rg-az104-training \
+  --name vm-linux-01 \
+  --show-details
+```
+
+## NIC
+
+```bash
+az network nic show \
+  --resource-group rg-az104-training \
+  --name vm-linux-01VMNic
+```
+
+## Effective NSG
+
+```bash
+az network nic list-effective-nsg \
+  --resource-group rg-az104-training \
+  --name vm-linux-01VMNic
+```
+
+## NSG Rules
+
+```bash
+az network nsg rule list \
+  --resource-group rg-az104-training \
+  --nsg-name vm-linux-01NSG \
+  --output table
+```
+
+## RBAC
+
+```bash
+az role assignment list --all --output table
+```
+
+## Role Definitions
+
+```bash
+az role definition list --output table
+```
+
+## Azure Monitor
+
+```bash
+az monitor metrics list-definitions
+```
+
+## Provider API Versions
+
+```bash
+az provider show \
+  --namespace Microsoft.ResourceHealth \
+  --output table
+```
+
+---
+
+# Common Linux Diagnostic Commands
+
+## Identity
+
+```bash
+whoami
+```
+
+## Host
+
+```bash
+hostname
+```
+
+## Kernel
+
+```bash
+uname -r
+```
+
+## Memory
+
+```bash
+free -h
+```
+
+## Disk
+
+```bash
+df -h
+lsblk -f
+```
+
+## Mounts
+
+```bash
+findmnt
+findmnt /data
+```
+
+## Processes
+
+```bash
+ps -ef
+```
+
+## Network Interfaces
+
+```bash
+ip addr
+```
+
+## Routing
+
+```bash
+ip route
+```
+
+## Listening Ports
+
+```bash
+ss -tulpn
+```
+
+## Firewall
+
+```bash
+sudo ufw status
+```
+
+## Nginx
+
+```bash
+systemctl status nginx
+```
+
+## Nginx Logs
+
+```bash
+journalctl -u nginx
+```
+
+## Local HTTP
+
+```bash
+curl -I http://localhost
+```
+
+## External HTTPS
+
+```bash
+curl -I https://www.microsoft.com
+```
+
+---
+
+# Troubleshooting Decision Matrix
+
+| Symptom                                | First Check                        | Next Check              |
+| -------------------------------------- | ---------------------------------- | ----------------------- |
+| `az: command not found`                | Where is Azure CLI being executed? | Cloud Shell / local CLI |
+| SSH failure                            | Private key permissions            | NSG TCP 22              |
+| HTTP timeout                           | Nginx status                       | Port 80 / NSG           |
+| Local HTTP works but public HTTP fails | NSG                                | Public IP / NIC         |
+| DNS failure                            | `/etc/resolv.conf`                 | `ip route`              |
+| No network connectivity                | `ip route`                         | NSG / NIC               |
+| Storage authorization failure          | RBAC assignment                    | Token propagation       |
+| Blob upload failure                    | Data-plane role                    | Refresh token           |
+| Azure Files OAuth failure              | Required RBAC role                 | Authentication mode     |
+| File download path error               | CLI parameter syntax               | Destination directory   |
+| Monitor metric error                   | Metric API name                    | Metric definitions      |
+| Resource Health API error              | Resource type                      | Supported API version   |
+| Missing data disk                      | `lsblk`                            | Azure VM `dataDisks`    |
+| RBAC query returns no rows             | Principal Object ID                | Exact resource scope    |
+| Managed Identity access unclear        | Principal                          | Resource-scoped role    |
+| Kernel upgrade pending                 | `uname -r`                         | Planned reboot          |
+
+---
+
+# Layered Troubleshooting Model
+
+Azure infrastructure issues should be investigated from the lowest relevant layer upward.
+
+```text
+┌─────────────────────────┐
+│ Application             │
+├─────────────────────────┤
+│ Service / Process       │
+├─────────────────────────┤
+│ Listening Port          │
+├─────────────────────────┤
+│ Linux Firewall          │
+├─────────────────────────┤
+│ NIC / IP Configuration  │
+├─────────────────────────┤
+│ Network Security Group  │
+├─────────────────────────┤
+│ Subnet                  │
+├─────────────────────────┤
+│ Virtual Network         │
+├─────────────────────────┤
+│ Azure Resource          │
+└─────────────────────────┘
+```
+
+For identity problems:
+
+```text
+Principal
+   ↓
+Authentication
+   ↓
+Role Assignment
+   ↓
+Role Definition
+   ↓
+Scope
+   ↓
+Management/Data Plane
+   ↓
+Actual Access
+```
+
+For storage problems:
+
+```text
+Storage Account
+   ↓
+Container / File Share
+   ↓
+Authentication
+   ↓
+RBAC
+   ↓
+Data Plane
+   ↓
+Operation
+```
+
+For VM storage problems:
+
+```text
+Azure VM
+   ↓
+Managed Disk Attachment
+   ↓
+Guest Block Device
+   ↓
+Partition
+   ↓
+Filesystem
+   ↓
+Mount Point
+```
+
+---
+
+# Best Practices Learned
+
+* Always verify the active Azure subscription.
+* Inspect existing resources before modifying them.
+* Verify which NSG is actually associated with the VM.
+* Use effective NSG rules when troubleshooting network access.
+* Test services locally before investigating external connectivity.
+* Separate Azure infrastructure administration from Linux operating-system administration.
+* Validate every configuration change.
+* Schedule kernel reboots during maintenance windows.
+* Verify Azure RBAC assignments before troubleshooting permissions.
+* Allow for RBAC propagation after role changes.
+* Refresh Azure CLI tokens when required after authorization changes.
+* Use exact resource scopes during RBAC troubleshooting.
+* Verify security principal IDs before querying authorization.
+* Distinguish management-plane permissions from data-plane permissions.
+* Do not unnecessarily install software on the VM.
+* Validate Azure Monitor metric API names.
+* Verify supported Azure REST API versions.
+* Troubleshoot storage from Azure configuration through filesystem mount.
+* Avoid unnecessary infrastructure changes during diagnosis.
+* Use actual access tests to confirm authorization where appropriate.
+* Document the root cause instead of only documenting the fix.
+
+---
+
+# Key Lessons by Day
+
+| Day    | Main Troubleshooting Lesson                                           |
+| ------ | --------------------------------------------------------------------- |
+| Day 01 | Verify subscription and resource context before making changes        |
+| Day 02 | Verify effective network security configuration                       |
+| Day 03 | Inspect both Azure VM configuration and guest OS                      |
+| Day 04 | Troubleshoot connectivity layer-by-layer                              |
+| Day 05 | Understand RBAC, identities and authorization                         |
+| Day 06 | Distinguish management-plane and data-plane permissions               |
+| Day 07 | Understand authentication differences across Storage services         |
+| Day 08 | Use Network Watcher and effective networking information              |
+| Day 09 | Verify monitoring API names, provider versions and storage attachment |
+| Day 10 | Troubleshoot RBAC using exact principal, scope and access tests       |
+
+---
+
+# Overall Troubleshooting Philosophy
+
+The project follows a **diagnose before modifying** approach.
+
+```text
+Observe
+   ↓
+Collect Evidence
+   ↓
+Verify
+   ↓
+Identify Root Cause
+   ↓
+Make Minimal Change
+   ↓
+Verify Again
+   ↓
+Document
+```
+
+The objective is not simply to make an error disappear.
+
+The objective is to understand:
+
+* What failed
+* Why it failed
+* Which Azure layer was responsible
+* Which diagnostic evidence proved the root cause
+* What minimum change resolved the issue
+* How to prevent the issue in future deployments
+
+---
+
+# Project Troubleshooting Status
+
+| Day    | Focus                                       | Status      |
+| ------ | ------------------------------------------- | ----------- |
+| Day 01 | Azure CLI / Resource Groups                 | ✅ Completed |
+| Day 02 | Networking / NSG                            | ✅ Completed |
+| Day 03 | VM / Managed Disks                          | ✅ Completed |
+| Day 04 | Linux / Nginx / Connectivity                | ✅ Completed |
+| Day 05 | Identity / RBAC / Managed Identity          | ✅ Completed |
+| Day 06 | Blob Storage / Authorization                | ✅ Completed |
+| Day 07 | Azure Files / Storage Protection            | ✅ Completed |
+| Day 08 | Advanced Networking / Network Watcher       | ✅ Completed |
+| Day 09 | Azure Monitor / Operational Troubleshooting | ✅ Completed |
+| Day 10 | Entra ID / Azure RBAC Troubleshooting       | ✅ Completed |
+
+---
+
+# Conclusion
+
+The troubleshooting exercises across Day 01–Day 10 demonstrate practical Azure Administrator skills in:
+
+* Azure CLI troubleshooting
+* Linux administration
+* SSH troubleshooting
+* Nginx troubleshooting
+* Azure networking
+* NSG analysis
+* Network Watcher
+* VM diagnostics
+* Managed Disk verification
+* Microsoft Entra ID
+* Azure RBAC
+* Managed Identity
+* Azure Storage authorization
+* Azure Files
+* Azure Monitor
+* Resource Health
+* REST API troubleshooting
+* Layered infrastructure diagnosis
+
+The most important operational principle demonstrated throughout the project is:
+
+> **Do not change infrastructure until the evidence identifies what is actually wrong.**
+
+This approach reduces unnecessary changes, prevents privilege escalation, minimizes Azure for Students resource consumption, and reflects real-world Azure Administrator troubleshooting practices.

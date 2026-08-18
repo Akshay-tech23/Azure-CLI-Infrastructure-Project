@@ -2,279 +2,314 @@
 
 ## Project Overview
 
-This document tracks the day-by-day progress of the **Azure CLI Infrastructure Project**. Each milestone represents practical Azure Administrator skills acquired through hands-on labs, Linux administration, Azure CLI, and infrastructure management.
+This document tracks the day-by-day progress of the **Azure CLI Infrastructure Project**.
+
+The project is a hands-on Azure Administrator environment covering Azure CLI, Azure Cloud Shell, networking, compute, Linux administration, storage, monitoring, Microsoft Entra ID, Azure RBAC, Managed Identity, security, and infrastructure troubleshooting.
+
+Each milestone represents practical Azure Administrator skills acquired through implementation, verification, troubleshooting, and technical documentation.
 
 ---
 
 # Progress Summary
 
-| Day | Topic | Status |
-|-----|-------------------------------|--------|
-| Day 01 | Azure Environment Setup | ✅ Completed |
-| Day 02 | Azure Networking Fundamentals | ✅ Completed |
-| Day 03 | Azure Virtual Machines & Managed Disks | ✅ Completed |
-| Day 04 | Linux Administration & Nginx Deployment | ✅ Completed |
+| Day    | Module                                            | Status      |
+| ------ | ------------------------------------------------- | ----------- |
+| Day 01 | Azure CLI & Resource Groups                       | ✅ Completed |
+| Day 02 | Azure Networking                                  | ✅ Completed |
+| Day 03 | Azure Virtual Machines & Managed Disks            | ✅ Completed |
+| Day 04 | Linux Administration, Nginx & NSG Troubleshooting | ✅ Completed |
+| Day 05 | Microsoft Entra ID, Azure RBAC & Managed Identity | ✅ Completed |
+| Day 06 | Azure Storage Administration                      | ✅ Completed |
+| Day 07 | Azure Files & Advanced Storage Management         | ✅ Completed |
+| Day 08 | VM Networking, NSG & Connectivity Troubleshooting | ✅ Completed |
+| Day 09 | Azure Monitoring, Alerts & Operational Management | ✅ Completed |
+| Day 10 | Microsoft Entra ID, Azure RBAC & Managed Identity | ✅ Completed |
 
 ---
 
-# Day 01 – Azure Environment Setup
+# Day 01 — Azure CLI & Resource Groups
 
 ## Objectives
 
-- Configure Azure for Students subscription
-- Install and configure Azure CLI
-- Create the Resource Group
-- Create the Virtual Network
-- Configure subnet architecture
-- Learn Azure resource organization
-
-### Skills Acquired
-
-- Azure CLI basics
-- Resource Groups
-- Virtual Networks
-- Subnets
-- Azure resource hierarchy
-
-### Deliverables
-
-- Azure environment prepared
-- Network infrastructure created
-- CLI authentication completed
-
-Status
-
-**Completed ✅**
-
----
-
-# Day 02 – Azure Networking Fundamentals
-
-## Objectives
-
-- Understand Azure networking concepts
-- Configure Network Security Groups
-- Create inbound SSH access
-- Learn Azure virtual networking architecture
-
-### Skills Acquired
-
-- Virtual Networks
-- Subnets
-- Network Security Groups
-- Security Rules
-- Azure networking concepts
-
-### Deliverables
-
-- SSH connectivity established
-- NSG configured
-- Secure network architecture implemented
-
-Status
-
-**Completed ✅**
-
----
-
-# Day 03 – Azure Virtual Machines & Managed Disks
-
-## Objectives
-
-- Deploy Ubuntu Linux Virtual Machine
-- Connect using SSH
-- Understand Azure Managed Disks
-- Partition and format storage
-- Mount persistent storage
-- Configure automatic mounting
-
-### Skills Acquired
-
-- Azure Virtual Machines
-- SSH administration
-- Linux storage management
-- Disk partitioning
-- Filesystems
-- Persistent mounts using `/etc/fstab`
-
-### Deliverables
-
-- Linux VM deployed
-- Managed disk attached
-- Disk formatted and mounted
-- Persistent storage configured
-
-Status
-
-**Completed ✅**
-
----
-
-# Day 04 – Linux Administration & Nginx Deployment
-
-## Objectives
-
-- Perform Linux package management
-- Install and manage Nginx
-- Understand systemd services
-- Verify network connectivity
-- Configure Azure Network Security Group for HTTP
-- Troubleshoot Azure networking issues
-
-### Skills Acquired
-
-- Linux package management
-- SSH administration
-- systemd service management
-- Nginx deployment
-- Azure NSG administration
-- Network troubleshooting
-- Effective NSG analysis
-
-### Activities Performed
-
-- Connected to the Linux VM using SSH
-- Updated package repositories
-- Installed operating system updates
-- Installed Nginx web server
-- Verified running services
-- Verified listening ports
-- Tested local web server functionality
-- Configured inbound HTTP access
-- Identified an incorrect NSG association
-- Applied the HTTP rule to the correct NSG
-- Successfully accessed the web server through the browser
-
-### Challenges Encountered
-
-**Issue**
-
-The Nginx web server was accessible locally but not from the Internet.
-
-**Investigation**
-
-- Verified Nginx service
-- Verified Port 80
-- Verified UFW firewall
-- Verified local HTTP response
-- Reviewed effective Network Security Group
-
-**Root Cause**
-
-The Virtual Machine was associated with **vm-linux-01NSG**, while the HTTP rule had initially been created in **nsg-az104-training**.
-
-**Resolution**
-
-Created the HTTP rule in the correct Network Security Group.
-
-### Deliverables
-
-- Linux system updated
-- Nginx deployed
-- HTTP connectivity verified
-- Azure networking issue resolved
-- Browser successfully displayed the default Nginx page
-
-Status
-
-**Completed ✅**
-
----
-
-# Current Project Statistics
-
-| Metric | Value |
-|---------|------:|
-| Days Completed | 4 |
-| Azure CLI Commands Practiced | 60+ |
-| Linux Commands Practiced | 40+ |
-| Azure Services Used | 6 |
-| Virtual Machines | 1 |
-| Virtual Networks | 1 |
-| Network Security Groups | 2 |
-| Managed Disks | 2 |
-| Web Servers Deployed | 1 |
-
----
-
-# Skills Gained So Far
-
-### Azure
-
-- Azure CLI
-- Resource Groups
-- Virtual Networks
-- Subnets
-- Network Security Groups
-- Virtual Machines
-- Managed Disks
-
-### Linux
-
-- SSH
-- Package Management
-- Disk Management
-- Filesystems
-- systemd
-- Service Management
-- Networking
-
-### Web Infrastructure
-
-- Nginx Installation
-- HTTP Service
-- Port Verification
-- Browser Testing
-
-### Troubleshooting
-
-- Network Diagnostics
-- Effective NSG Verification
-- Service Validation
-- End-to-End Connectivity Testing
-
----
-
-# Overall Progress
-
-```
-Azure Foundations         ████████████████████ 100%
-
-Networking                ████████████████████ 100%
-
-Virtual Machines          ████████████████████ 100%
-
-Linux Administration      ████████████████████ 100%
-
-Web Server Deployment     ████████████████████ 100%
-
-Storage Management        ████████████████████ 100%
+* Configure the Azure for Students environment.
+* Connect to Azure using Azure CLI and Azure Cloud Shell.
+* Verify the active Azure subscription.
+* Create the project Resource Group.
+* Understand Azure resource organization.
+* Begin infrastructure deployment using CLI-based administration.
+
+## Primary Resource
+
+```text
+rg-az104-training
 ```
 
+## Skills Acquired
+
+* Azure CLI basics
+* Azure Cloud Shell
+* Subscription management
+* Resource Groups
+* Azure resource hierarchy
+* CLI-based resource administration
+
+## Activities Completed
+
+* Authenticated to Azure.
+* Verified the active subscription.
+* Created the project Resource Group.
+* Inspected Azure resources using Azure CLI.
+* Established the foundation for the remaining infrastructure labs.
+
+## Deliverables
+
+* Azure environment prepared.
+* Resource Group created.
+* Azure CLI administration established.
+* Initial project documentation created.
+
+## Status
+
+**Completed ✅**
+
 ---
 
-## Next Milestone
+# Day 02 — Azure Networking Fundamentals
 
-**Day 05**
+## Objectives
 
-Focus areas:
+* Understand Azure Virtual Network architecture.
+* Create the project Virtual Network.
+* Configure subnet architecture.
+* Create and configure Network Security Groups.
+* Configure inbound SSH and HTTP access.
+* Understand Azure network security.
 
-- Azure Identity
-- Microsoft Entra ID
-- Role-Based Access Control (RBAC)
-- Managed Identity
-- Azure Key Vault (Introduction)
+## Network Configuration
 
+```text
+Virtual Network:
+vnet-az104-training
 
-# Day 05 – Daily Progress
+Address Space:
+10.0.0.0/16
+
+Frontend Subnet:
+10.0.1.0/24
+
+Backend Subnet:
+10.0.2.0/24
+```
+
+## Skills Acquired
+
+* Virtual Networks
+* Subnets
+* IP addressing
+* Network Security Groups
+* NSG security rules
+* Inbound traffic management
+* Azure networking architecture
+
+## Activities Completed
+
+* Created the Virtual Network.
+* Created frontend and backend subnets.
+* Configured Network Security Groups.
+* Configured SSH access on TCP/22.
+* Configured HTTP access on TCP/80.
+* Verified networking resources using Azure CLI.
+
+## Deliverables
+
+* Virtual Network created.
+* Subnets configured.
+* NSG configured.
+* Network architecture documented.
+* Networking verification completed.
+
+## Status
+
+**Completed ✅**
+
+---
+
+# Day 03 — Azure Virtual Machines & Managed Disks
+
+## Objectives
+
+* Deploy an Ubuntu Linux Virtual Machine.
+* Configure SSH key authentication.
+* Understand Azure VM sizing.
+* Attach and configure a Managed Data Disk.
+* Partition and format storage.
+* Configure persistent Linux storage.
+
+## Virtual Machine
+
+```text
+Name:
+vm-linux-01
+
+Operating System:
+Ubuntu Server 24.04 LTS
+
+VM Size:
+Standard_B2s_v2
+
+Region:
+Central India
+```
+
+## Storage Configuration
+
+```text
+OS Disk:
+30 GB
+
+Data Disk:
+16 GB
+
+Mount Point:
+ /data
+```
+
+## Skills Acquired
+
+* Azure Virtual Machines
+* SSH administration
+* Linux storage management
+* Disk partitioning
+* ext4 filesystems
+* Managed Disks
+* Persistent mounts
+* `/etc/fstab`
+* UUID-based mounting
+
+## Activities Completed
+
+* Deployed the Ubuntu Virtual Machine.
+* Connected to the VM using SSH.
+* Inspected attached disks.
+* Attached the Managed Data Disk.
+* Partitioned the data disk.
+* Created an ext4 filesystem.
+* Mounted the disk at `/data`.
+* Configured persistent mounting using `/etc/fstab`.
+* Verified filesystem and disk configuration.
+
+## Deliverables
+
+* Linux VM deployed.
+* SSH access established.
+* Managed Disk configured.
+* Persistent storage configured.
+* Linux storage configuration documented.
+
+## Status
+
+**Completed ✅**
+
+---
+
+# Day 04 — Linux Administration & Nginx Deployment
+
+## Objectives
+
+* Perform Linux package management.
+* Install and manage Nginx.
+* Understand systemd services.
+* Verify network connectivity.
+* Configure HTTP access.
+* Troubleshoot Azure networking issues.
+
+## Skills Acquired
+
+* Linux package management
+* SSH administration
+* systemd service management
+* Nginx deployment
+* Azure NSG administration
+* Port verification
+* Network troubleshooting
+* Effective NSG analysis
+* End-to-end connectivity testing
+
+## Activities Completed
+
+* Connected to the Linux VM using SSH.
+* Updated package repositories.
+* Installed operating system updates.
+* Installed Nginx.
+* Verified Nginx service status.
+* Verified listening ports.
+* Tested local HTTP functionality.
+* Configured inbound HTTP access.
+* Reviewed the effective Network Security Group.
+* Identified an incorrect NSG association.
+* Applied the HTTP rule to the correct NSG.
+* Successfully accessed the Nginx web server through the browser.
+
+## Challenge Encountered
+
+### Issue
+
+Nginx was accessible locally but was not accessible from the Internet.
+
+### Investigation
+
+The following were verified:
+
+* Nginx service status.
+* TCP/80 listening state.
+* Linux firewall configuration.
+* Local HTTP response.
+* Effective Network Security Group.
+* VM network interface and NSG association.
+
+### Root Cause
+
+The Virtual Machine was associated with:
+
+```text
+vm-linux-01NSG
+```
+
+while the HTTP rule had initially been created in:
+
+```text
+nsg-az104-training
+```
+
+### Resolution
+
+The HTTP rule was created in the correct Network Security Group associated with the VM.
+
+### Result
+
+The Nginx web server became externally accessible and the default Nginx page was successfully displayed.
+
+## Deliverables
+
+* Linux system updated.
+* Nginx deployed.
+* HTTP connectivity verified.
+* NSG configuration issue resolved.
+* Browser connectivity successfully validated.
+
+## Status
+
+**Completed ✅**
+
+---
+
+# Day 05 — Microsoft Entra ID, Azure RBAC & Managed Identity
 
 **Date:** 05 August 2026
 
 ## Objective
 
-Implement Azure Identity and Access Management (IAM) concepts by exploring Microsoft Entra ID, Azure RBAC, and enabling a System Assigned Managed Identity for the existing Linux virtual machine using Azure CLI.
-
----
+Implement Azure Identity and Access Management concepts by exploring Microsoft Entra ID, Azure RBAC, and enabling a System Assigned Managed Identity for the existing Linux Virtual Machine using Azure CLI.
 
 ## Activities Completed
 
@@ -283,13 +318,11 @@ Implement Azure Identity and Access Management (IAM) concepts by exploring Micro
 * Listed Microsoft Entra users and groups.
 * Explored Azure RBAC built-in role definitions.
 * Reviewed current Azure RBAC role assignments.
-* Verified subscription-level **Owner** permissions.
-* Enabled a **System Assigned Managed Identity** on `vm-linux-01`.
+* Verified subscription-level Owner permissions.
+* Enabled a System Assigned Managed Identity on `vm-linux-01`.
 * Verified the managed identity configuration using Azure CLI.
-* Updated project architecture to include the managed identity.
+* Updated the project architecture to include the managed identity.
 * Created Day 05 documentation and automation script.
-
----
 
 ## Skills Learned
 
@@ -297,67 +330,52 @@ Implement Azure Identity and Access Management (IAM) concepts by exploring Micro
 * Azure RBAC role inspection
 * RBAC scope and role assignment verification
 * Managed Identity configuration
-* Azure CLI identity management commands
+* Azure CLI identity management
 * Infrastructure verification using Azure CLI
-
----
 
 ## Deliverables
 
-* ✅ `labs/Day-05/Lab.md`
-* ✅ `labs/Day-05/Notes.md`
-* ✅ `labs/Day-05/Verification.md`
-* ✅ `labs/Day-05/Resources.md`
-* ✅ `scripts/azure-cli/Day-05.sh`
-* ✅ Updated `Architecture.md`
-* ✅ Updated `Daily-Progress.md`
+```text
+labs/Day-05/
+├── Lab.md
+├── Notes.md
+├── Verification.md
+└── Resources.md
 
----
+scripts/azure-cli/
+└── Day-05.sh
+```
+
+Additional updates:
+
+* Architecture documentation updated.
+* Daily progress documentation updated.
 
 ## Challenges
 
 No technical issues or permission-related errors were encountered during the implementation.
 
----
-
-## Solutions
-
-Not applicable. All Azure CLI commands executed successfully, and the managed identity was enabled and verified without additional troubleshooting.
-
----
-
 ## Outcome
 
-The Azure environment now includes a **System Assigned Managed Identity** attached to `vm-linux-01`. This prepares the infrastructure for future labs involving secure authentication to Azure services such as Azure Key Vault, Azure Storage, and Azure Automation without using stored credentials.
+The Azure environment now includes a **System Assigned Managed Identity** attached to:
 
-# Daily Progress
+```text
+vm-linux-01
+```
 
-## Project
+This established the identity foundation for secure authentication to Azure services without storing application credentials on the VM.
 
-**Azure AZ-104 Infrastructure Project**
+## Status
 
-Repository: **Azure-CLI-Infrastructure-Project**
-
----
-
-# Progress Summary
-
-| Day    | Module                                                         | Status      |
-| ------ | -------------------------------------------------------------- | ----------- |
-| Day 01 | Azure CLI, Resource Groups                                     | ✅ Completed |
-| Day 02 | Virtual Networks, Subnets, Network Security Groups             | ✅ Completed |
-| Day 03 | Azure Virtual Machines, Linux Administration, Managed Disks    | ✅ Completed |
-| Day 04 | SSH Administration, Linux Services, Nginx, NSG Troubleshooting | ✅ Completed |
-| Day 05 | Microsoft Entra ID, Azure RBAC, Managed Identity               | ✅ Completed |
-| Day 06 | Azure Storage Administration                                   | ✅ Completed |
+**Completed ✅**
 
 ---
 
-# Day 06 Summary
+# Day 06 — Azure Storage Administration
 
 ## Module
 
-Azure Storage Administration
+**Azure Storage Administration**
 
 ## Objectives Completed
 
@@ -368,15 +386,13 @@ Azure Storage Administration
 * Uploaded a blob using Microsoft Entra ID authentication.
 * Listed blobs within the container.
 * Downloaded a blob and verified file integrity.
-* Generated a User Delegation Shared Access Signature (SAS).
+* Generated a User Delegation Shared Access Signature.
 * Accessed a blob using the generated SAS token.
 * Reviewed Storage Account networking configuration.
 * Applied Azure RBAC for Storage Blob data-plane access.
 * Troubleshot Azure RBAC propagation and authentication token refresh.
 
----
-
-# Resources Created
+## Resources Created
 
 | Resource        | Name                 |
 | --------------- | -------------------- |
@@ -384,106 +400,73 @@ Azure Storage Administration
 | Blob Container  | `training-container` |
 | Sample Blob     | `sample.txt`         |
 
----
-
-# Security Features Implemented
+## Security Features Implemented
 
 * HTTPS-only storage access.
 * Microsoft-managed encryption.
 * Microsoft Entra ID authentication.
 * Azure RBAC authorization.
 * User Delegation SAS.
-* Blob Public Access disabled.
+* Blob public access disabled.
 * Server-side encryption verification.
 
----
-
-# Lessons Learned
+## Lessons Learned
 
 * Azure Storage separates management-plane and data-plane authorization.
-* Azure RBAC changes may require access token refresh before taking effect.
-* Microsoft Entra ID is the preferred authentication mechanism for Azure Storage.
-* User Delegation SAS provides secure, temporary access without exposing storage account keys.
-* Azure CLI can perform complete Blob Storage administration without using the Azure portal.
+* Azure RBAC changes may require an access-token refresh before taking effect.
+* Microsoft Entra ID provides identity-based authentication for Azure Storage.
+* User Delegation SAS provides temporary access without exposing storage account keys.
+* Azure CLI can perform complete Blob Storage administration without relying on the Azure portal.
 
----
+## Current Azure Environment
 
-# Current Azure Environment
+### Resource Group
 
-## Resource Group
-
-```text id="kgjlwm"
+```text
 rg-az104-training
 ```
 
-## Virtual Machine
+### Virtual Machine
 
-```text id="pnqlvv"
+```text
 vm-linux-01
 ```
 
-## Storage Account
+### Storage Account
 
-```text id="4sj8v2"
+```text
 staz104training01
 ```
 
-## Blob Container
+### Blob Container
 
-```text id="2i9pqk"
+```text
 training-container
 ```
 
----
+## Status
 
-# Next Module
-
-**Day 07 – Azure File Storage, Azure Files, Storage Security, Lifecycle Management, and Storage Monitoring**
-
-The next module will expand Azure Storage administration by covering Azure Files, file shares, lifecycle management policies, monitoring, diagnostics, and storage optimization techniques commonly used in enterprise environments.
+**Completed ✅**
 
 ---
 
-# Overall Bootcamp Progress
+# Day 07 — Azure Files & Advanced Azure Storage Management
 
-| Category                     | Completion |
-| ---------------------------- | ---------- |
-| Azure CLI                    | ✅          |
-| Resource Management          | ✅          |
-| Networking                   | ✅          |
-| Virtual Machines             | ✅          |
-| Linux Administration         | ✅          |
-| Identity & Access Management | ✅          |
-| Azure Storage                | ✅          |
-| Azure Files                  | ⏳ Upcoming |
-| Monitoring                   | ⏳ Upcoming |
-| Backup & Recovery            | ⏳ Upcoming |
+## Objectives Completed
 
----
+* Review the existing Azure Storage Account.
+* Create an Azure File Share using Azure CLI.
+* Verify the SMB file-share configuration.
+* Upload, list, and download files from Azure Files.
+* Assign Azure Files RBAC permissions.
+* Enable Blob Soft Delete.
+* Enable Blob Versioning.
+* Configure and verify a Lifecycle Management Policy.
+* Review Azure Monitor Metrics.
+* Review Diagnostic Settings.
+* Harden the Storage Account by upgrading the minimum TLS version to TLS 1.2.
 
-**Current Bootcamp Status:** **Day 06 Completed Successfully** ✅
-
-# Daily Progress
-
-## Day 07 – Azure Files and Advanced Azure Storage Management
-
-**Status:** ✅ Completed
-
-### Objectives Completed
-
-* Reviewed the existing Azure Storage Account.
-* Created an Azure File Share using Azure CLI.
-* Verified the SMB file share configuration.
-* Uploaded, listed, and downloaded files from Azure Files.
-* Assigned Azure Files RBAC permissions.
-* Enabled Blob Soft Delete with a 7-day retention period.
-* Enabled Blob Versioning.
-* Configured and verified a Lifecycle Management Policy.
-* Reviewed Azure Monitor Metrics.
-* Reviewed Diagnostic Settings.
-* Hardened the Storage Account by upgrading the Minimum TLS version to TLS 1.2.
-
-### Azure Services Used
+## Azure Services Used
 
 * Azure Storage Account
 * Azure Blob Storage
@@ -492,63 +475,88 @@ The next module will expand Azure Storage administration by covering Azure Files
 * Microsoft Entra ID
 * Azure RBAC
 
-### Skills Gained
+## Storage Protection
 
-* Azure Files Administration
-* SMB File Share Management
-* Azure Storage Data Protection
+The following data-protection capabilities were implemented or reviewed:
+
+```text
+Blob Soft Delete
+Blob Versioning
+Lifecycle Management
+```
+
+## Security Hardening
+
+The Storage Account minimum TLS version was upgraded to:
+
+```text
+TLS 1.2
+```
+
+## Skills Gained
+
+* Azure Files administration
+* SMB file-share management
+* Azure Storage data protection
 * Blob Soft Delete
 * Blob Versioning
 * Lifecycle Management
-* Azure Storage Monitoring
-* Azure Storage Security Hardening
-* Azure CLI Storage Administration
+* Storage monitoring
+* Diagnostic Settings
+* Storage security hardening
+* Azure CLI Storage administration
 
-### Lab Outcome
+## Lab Outcome
 
-The existing Azure Storage Account was enhanced with Azure Files and advanced storage management capabilities. Enterprise storage features including Blob Soft Delete, Blob Versioning, Lifecycle Management, monitoring verification, and security hardening were successfully implemented and validated using Azure CLI.
+The existing Azure Storage environment was expanded with Azure Files and advanced storage-management capabilities.
 
-# Day 08 — Daily Progress
+Enterprise storage features including data protection, lifecycle management, monitoring verification, and security hardening were successfully implemented and validated using Azure CLI.
 
-## Date
+## Status
 
-**08 August 2026**
+**Completed ✅**
+
+---
+
+# Day 08 — VM Networking, NSG & Connectivity Troubleshooting
+
+**Date:** 08 August 2026
 
 ## Focus
 
 **Azure VM Networking, NSG & Connectivity Troubleshooting**
 
-## Completed
+## Activities Completed
 
 * Verified Azure VM Run Command functionality.
 * Tested DNS resolution from the Linux VM using `getent ahostsv4`.
 * Retrieved VM private IP, public IP, and power state.
-* Identified the VM's Network Interface (NIC).
+* Identified the VM Network Interface.
 * Inspected NIC, subnet, VNet, public IP, and NSG configuration.
 * Reviewed NSG inbound rules for SSH and HTTP.
 * Verified effective NSG security rules.
-* Verified Nginx was running on TCP port 80.
+* Verified Nginx was running on TCP/80.
 * Tested HTTP locally using `curl`.
-* Tested external HTTP connectivity through the VM's public IP.
+* Tested external HTTP connectivity through the VM public IP.
 * Inspected Linux listening ports using `ss -tulpn`.
 * Inspected the Linux routing table using `ip route`.
-* Verified outbound HTTPS connectivity to Microsoft using `curl`.
+* Verified outbound HTTPS connectivity using `curl`.
 
 ## Key Results
 
 ```text
-VM State                    → Running
-Private IP                  → 10.0.2.4
-Public IP                   → 98.70.41.38
-SSH                         → TCP/22 Allowed
-HTTP                        → TCP/80 Allowed
-Nginx                       → Running
-Local HTTP                  → HTTP 200 OK
-External HTTP               → HTTP 200 OK
-Outbound HTTPS              → HTTP/2 200
-DNS Resolution              → Successful
-Routing                     → Verified
-Effective NSG Rules         → Verified
+VM State                → Running
+Private IP              → 10.0.2.4
+Public IP               → Verified during lab
+SSH                     → TCP/22 Allowed
+HTTP                    → TCP/80 Allowed
+Nginx                   → Running
+Local HTTP              → HTTP 200 OK
+External HTTP           → HTTP 200 OK
+Outbound HTTPS          → Successful
+DNS Resolution          → Successful
+Routing                 → Verified
+Effective NSG Rules     → Verified
 ```
 
 ## Skills Practiced
@@ -563,13 +571,13 @@ Effective NSG Rules         → Verified
 * Linux networking
 * DNS troubleshooting
 * Routing troubleshooting
-* Port/service troubleshooting
+* Port and service troubleshooting
 * HTTP/HTTPS connectivity testing
 * Nginx verification
 
 ## AZ-104 Practical Learning
 
-The main troubleshooting approach practiced today was:
+A structured troubleshooting methodology was practiced:
 
 ```text
 DNS
@@ -584,81 +592,133 @@ Port
  ↓
 Service
  ↓
-Application response
+Application Response
 ```
 
-This provides a structured method for diagnosing Azure VM connectivity problems.
+This provides a systematic approach for diagnosing Azure VM connectivity problems.
 
-## Day 08 Status
+## Status
 
-**COMPLETED ✅**
-## Day 09 — Azure Monitoring, Alerts and Operational Management
+**Completed ✅**
 
-### Completed
+---
 
-* Reviewed Azure Monitor VM metric definitions
-* Collected VM CPU, network, disk, and availability metrics
-* Reviewed Azure Activity Log
-* Investigated Activity Log operation status and correlation
-* Verified VM Resource Health
-* Reviewed Storage Account platform metrics
-* Verified Storage capacity, transactions, and availability
-* Inspected VM and Storage Diagnostic Settings
-* Evaluated Log Analytics Workspace requirements and cost considerations
-* Created and verified a CPU metric alert
-* Reviewed Activity Log alert configuration
-* Reviewed Azure Advisor recommendations
-* Reviewed Service Health events
-* Performed Linux guest-level monitoring using VM Run Command
-* Checked Linux uptime and load
-* Checked memory utilization
-* Checked filesystem utilization
-* Checked guest network statistics
-* Checked top CPU-consuming processes
-* Investigated missing `/data` mount and expected data disk
-* Correlated Azure-side and guest-side monitoring evidence
+# Day 09 — Azure Monitoring, Alerts & Operational Management
 
-### Monitoring Configuration
+## Focus
 
-* Metric Alert: `alert-vm-linux-01-high-cpu`
-* Condition: Average CPU > 80%
-* Evaluation Frequency: 1 minute
-* Window: 5 minutes
-* Severity: 2
-* Auto-mitigation: Enabled
-* Action Group: Not configured
-* Log Analytics Workspace: Not created
+**Azure Monitoring, Alerts and Operational Management**
 
-### Troubleshooting Findings
+## Activities Completed
 
-* VM Resource Health: `Available`
-* VM Availability Metric: `1.0`
-* CPU utilization: approximately `0.21%`
-* Linux load average: `0.05, 0.02, 0.00`
-* Available memory: `7.1 GiB`
-* Root filesystem usage: `9%`
-* Guest network errors/drops: `0`
-* Previously documented 16 GB `/data` disk is currently not attached to the VM
+* Reviewed Azure Monitor VM metric definitions.
+* Collected VM CPU, network, disk, and availability metrics.
+* Reviewed Azure Activity Log.
+* Investigated Activity Log operation status and correlation.
+* Verified VM Resource Health.
+* Reviewed Storage Account platform metrics.
+* Verified Storage capacity, transactions, and availability.
+* Inspected VM and Storage Diagnostic Settings.
+* Evaluated Log Analytics Workspace requirements and cost considerations.
+* Created and verified a CPU metric alert.
+* Reviewed Activity Log alert configuration.
+* Reviewed Azure Advisor recommendations.
+* Reviewed Service Health events.
+* Performed Linux guest-level monitoring using VM Run Command.
+* Checked Linux uptime and load.
+* Checked memory utilization.
+* Checked filesystem utilization.
+* Checked guest network statistics.
+* Checked top CPU-consuming processes.
+* Investigated the missing `/data` mount and expected data disk.
+* Correlated Azure-side and guest-side monitoring evidence.
 
-### Cost Management
+## Monitoring Configuration
 
-No Log Analytics Workspace, Action Group, VM Insights, NAT Gateway, or additional high-availability infrastructure was created.
+| Setting                 | Value                        |
+| ----------------------- | ---------------------------- |
+| Metric Alert            | `alert-vm-linux-01-high-cpu` |
+| Condition               | Average CPU > 80%            |
+| Evaluation Frequency    | 1 minute                     |
+| Window                  | 5 minutes                    |
+| Severity                | 2                            |
+| Auto-Mitigation         | Enabled                      |
+| Action Group            | Not configured               |
+| Log Analytics Workspace | Not created                  |
 
-### Status
+## Monitoring Findings
 
-**Day 09 — Completed**
-## Day 10 — Microsoft Entra ID and Azure RBAC
+```text
+VM Resource Health      → Available
+VM Availability         → 1.0
+CPU Utilization         → Approximately 0.21%
+Linux Load Average      → 0.05, 0.02, 0.00
+Available Memory        → 7.1 GiB
+Root Filesystem Usage   → 9%
+Guest Network Errors    → 0
+Guest Network Drops     → 0
+```
 
-**Status:** Completed
+## Important Infrastructure Finding
 
-### Topics Covered
+The previously documented 16 GB `/data` Managed Disk was found to be **currently unavailable/not attached to the VM** during the Day 09 investigation.
 
-* Microsoft Entra tenant and user inspection
-* Entra groups and service principals
+This was identified by correlating Azure-side infrastructure information with Linux guest-level monitoring.
+
+This finding was documented rather than silently assuming that the previously configured disk was still attached.
+
+## Cost Management
+
+The following additional resources were **not created**:
+
+* Log Analytics Workspace
+* Action Group
+* VM Insights
+* NAT Gateway
+* Additional high-availability infrastructure
+
+This avoided unnecessary Azure for Students credit consumption while still providing practical monitoring experience.
+
+## Skills Gained
+
+* Azure Monitor
+* Metrics
+* Metric Alerts
+* Activity Log
+* Resource Health
+* Service Health
+* Azure Advisor
+* Diagnostic Settings
+* Linux guest monitoring
+* VM Run Command
+* Infrastructure correlation
+* Cost-aware monitoring design
+
+## Status
+
+**Completed ✅**
+
+---
+
+# Day 10 — Microsoft Entra ID & Azure RBAC
+
+## Focus
+
+**Microsoft Entra ID, Azure RBAC, Managed Identity and Least-Privilege Access**
+
+## Topics Covered
+
+* Microsoft Entra tenant inspection
+* Microsoft Entra user inspection
+* Entra groups
+* Service principals
 * Microsoft Entra directory roles
-* Azure RBAC role assignments
+* Azure RBAC
+* RBAC role assignments
 * RBAC scope and inheritance
-* Owner, Contributor, Reader
+* Owner
+* Contributor
+* Reader
 * Virtual Machine Contributor
 * Storage Account Contributor
 * Storage Blob Data Reader
@@ -669,67 +729,476 @@ No Log Analytics Workspace, Action Group, VM Insights, NAT Gateway, or additiona
 * Least-privilege access
 * RBAC troubleshooting
 
-### Practical Implementation
+## Practical Implementation
 
 * Inspected the active Azure subscription and tenant.
 * Inspected the current Microsoft Entra user.
 * Inspected existing Entra users and groups.
 * Inspected resource-group RBAC assignments.
-* Identified two existing subscription-level Owner assignments.
-* Verified the system-assigned identity on `vm-linux-01`.
+* Identified existing subscription-level Owner assignments.
+* Verified the System Assigned Managed Identity on `vm-linux-01`.
 * Confirmed the VM managed identity is represented as an Entra service principal.
-* Inspected existing storage-account RBAC assignments.
+* Inspected existing Storage Account RBAC assignments.
 * Compared management-plane and data-plane storage roles.
-* Assigned `Storage Blob Data Reader` to the VM managed identity at the `staz104training01` storage-account scope after explicit approval.
+* Assigned `Storage Blob Data Reader` to the VM managed identity at the `staz104training01` Storage Account scope.
 * Obtained an Azure Storage access token from the VM through Instance Metadata Service.
 * Successfully read `training-container/sample.txt` using the VM managed identity.
-* Verified the Blob request returned HTTP `200`.
+* Verified that the Blob request returned HTTP `200`.
 * Inspected the `Global Administrator` Entra directory role.
 * Inspected existing service principals.
 
-### Security Focus
+## Identity Architecture
 
-Applied least-privilege principles by granting the VM identity only:
+```text
+vm-linux-01
+      │
+      ▼
+System-Assigned Managed Identity
+      │
+      ▼
+Microsoft Entra ID
+      │
+      ▼
+OAuth Access Token
+      │
+      ▼
+Azure Storage Data Plane
+      │
+      ▼
+staz104training01
+      │
+      ▼
+training-container/sample.txt
+      │
+      ▼
+HTTP 200
+```
 
-`Storage Blob Data Reader`
+## RBAC Implementation
 
-at:
+The VM identity was granted:
 
-`staz104training01`
+```text
+Storage Blob Data Reader
+```
 
-No subscription-wide permissions were granted to the VM identity.
+at the:
+
+```text
+staz104training01
+```
+
+Storage Account scope.
+
+## Security Focus
+
+Least-privilege principles were applied by granting the VM identity only the permissions required for the demonstrated Blob Storage access.
+
+The VM identity was **not** granted:
+
+```text
+Subscription Owner
+Resource Group Contributor
+Owner
+Storage Account Contributor
+Blob write access
+Blob delete access
+```
 
 No users or groups were created or deleted.
 
 No existing permissions were removed.
 
-### Troubleshooting
+## Authentication vs Authorization
 
-Actual command-level issues encountered:
+### Authentication
 
-* Incorrect use of multiple values with `az role definition list --name`.
-* Incorrect Object ID used during one RBAC inspection query.
+```text
+VM Managed Identity
+        ↓
+Microsoft Entra ID
+        ↓
+Access Token
+```
 
-Both issues were diagnosed and corrected without changing infrastructure.
+### Authorization
 
-### Evidence
+```text
+Access Token
+        ↓
+Azure RBAC
+        ↓
+Storage Blob Data Reader
+        ↓
+Storage Account
+```
 
-Strongest Day 10 verification:
+## Troubleshooting
 
-* VM managed identity successfully obtained an Azure Storage token.
-* VM managed identity successfully read `training-container/sample.txt`.
-* Blob request returned HTTP `200`.
-* Exact `Storage Blob Data Reader` assignment was verified at the storage-account scope.
+The following command-level issues were encountered:
 
-### Repository Artifacts
+### Issue 1
+
+Incorrect use of multiple values with:
+
+```text
+az role definition list --name
+```
+
+### Issue 2
+
+Incorrect Object ID used during one RBAC inspection query.
+
+Both issues were diagnosed and corrected without making unintended infrastructure changes.
+
+## Strongest Verification
+
+The strongest Day 10 verification was the successful identity-based access flow:
+
+```text
+VM Managed Identity
+        ↓
+Azure Storage Token
+        ↓
+training-container/sample.txt
+        ↓
+HTTP 200
+```
+
+This demonstrates that the VM could authenticate to Azure Storage without storing a storage account key or password.
+
+## Repository Artifacts
 
 ```text
 labs/Day-10/
 ├── Lab.md
 ├── Notes.md
-├── Resource.md
+├── Resources.md
 └── Verification.md
 
 scripts/azure-cli/
 └── Day-10.sh
+```
+
+## Status
+
+**Completed ✅**
+
+---
+
+# Overall Project Statistics
+
+| Metric                         |               Current Status |
+| ------------------------------ | ---------------------------: |
+| Days Completed                 |                           10 |
+| Azure CLI                      |                            ✅ |
+| Azure Cloud Shell              |                            ✅ |
+| Resource Groups                |                            ✅ |
+| Virtual Networks               |                            ✅ |
+| Subnets                        |                            ✅ |
+| Network Security Groups        |                            ✅ |
+| Virtual Machines               |                            1 |
+| Ubuntu Linux VM                |                            1 |
+| Nginx Web Server               |                            1 |
+| Managed Disks                  | Implemented and investigated |
+| Azure Storage Accounts         |                            1 |
+| Blob Containers                |                            1 |
+| Azure Files                    |                            ✅ |
+| Microsoft Entra ID             |                            ✅ |
+| Azure RBAC                     |                            ✅ |
+| Managed Identity               |                            ✅ |
+| User Delegation SAS            |                            ✅ |
+| Storage Security               |                            ✅ |
+| Blob Soft Delete               |                            ✅ |
+| Blob Versioning                |                            ✅ |
+| Lifecycle Management           |                            ✅ |
+| Azure Monitor                  |                            ✅ |
+| Metric Alert                   |                            ✅ |
+| Activity Log                   |                            ✅ |
+| Resource Health                |                            ✅ |
+| Service Health                 |                            ✅ |
+| Infrastructure Troubleshooting |                            ✅ |
+| Azure CLI Automation Scripts   |                Day 01–Day 10 |
+
+---
+
+# Skills Gained Through Day 10
+
+## Azure Administration
+
+* Azure CLI
+* Azure Cloud Shell
+* Resource Groups
+* Resource Management
+* Subscription management
+* Azure resource verification
+
+## Networking
+
+* Virtual Networks
+* Subnets
+* IP addressing
+* Network Security Groups
+* NSG rules
+* Effective NSG rules
+* Network Interfaces
+* Public and private IPs
+* DNS troubleshooting
+* Routing
+* HTTP/HTTPS connectivity
+
+## Compute
+
+* Azure Virtual Machines
+* VM sizing
+* Ubuntu Server
+* SSH authentication
+* VM Run Command
+* Managed Disks
+* VM lifecycle administration
+
+## Linux Administration
+
+* SSH
+* APT package management
+* systemd
+* Nginx
+* Disk partitioning
+* ext4
+* `/etc/fstab`
+* UUID-based mounting
+* Linux networking
+* Linux resource monitoring
+
+## Storage
+
+* Azure Storage Accounts
+* StorageV2
+* Blob Storage
+* Blob Containers
+* Azure Files
+* SMB file shares
+* Blob upload/download
+* Storage RBAC
+* User Delegation SAS
+* Storage networking
+* Blob Soft Delete
+* Blob Versioning
+* Lifecycle Management
+* TLS hardening
+
+## Identity & Security
+
+* Microsoft Entra ID
+* Microsoft Entra users
+* Groups
+* Service principals
+* Directory roles
+* Azure RBAC
+* RBAC scope
+* Management-plane authorization
+* Data-plane authorization
+* Managed Identity
+* Credential-free authentication
+* Least privilege
+
+## Monitoring
+
+* Azure Monitor
+* VM metrics
+* Storage metrics
+* Metric Alerts
+* Activity Log
+* Resource Health
+* Service Health
+* Azure Advisor
+* Diagnostic Settings
+* Linux guest monitoring
+
+## Troubleshooting
+
+* NSG troubleshooting
+* Network diagnostics
+* DNS troubleshooting
+* Routing analysis
+* Port validation
+* Service validation
+* RBAC troubleshooting
+* Authentication token refresh
+* Azure-side and guest-side correlation
+* Infrastructure state validation
+
+---
+
+# AZ-104 Practical Progress
+
+The first ten days have provided hands-on exposure across the major Azure Administrator areas:
+
+```text
+Azure Administration
+████████████████████ 100%
+
+Networking
+████████████████████ 100%
+
+Compute
+████████████████████ 100%
+
+Linux Administration
+████████████████████ 100%
+
+Storage
+████████████████████ 100%
+
+Identity & RBAC
+████████████████████ 100%
+
+Monitoring
+████████████████████ 100%
+
+Troubleshooting
+████████████████████ 100%
+```
+
+---
+
+# Day 01–Day 10 Architecture Evolution
+
+```text
+Day 01
+Azure CLI + Resource Group
+        ↓
+Day 02
+VNet + Subnets + NSG
+        ↓
+Day 03
+Ubuntu VM + Managed Disks
+        ↓
+Day 04
+Linux + Nginx + HTTP
+        ↓
+Day 05
+Entra ID + Managed Identity
+        ↓
+Day 06
+Blob Storage + RBAC + SAS
+        ↓
+Day 07
+Azure Files + Data Protection
+        ↓
+Day 08
+Network Troubleshooting
+        ↓
+Day 09
+Azure Monitor + Alerts
+        ↓
+Day 10
+RBAC + Managed Identity + Secure Storage Access
+```
+
+---
+
+# Current Project State
+
+```text
+Project:
+Azure CLI Infrastructure Project
+
+Bootcamp:
+AZ-104 Azure Administrator
+
+Progress:
+Day 01 → Day 10
+
+Status:
+10/10 Days Completed
+
+Primary Cloud:
+Microsoft Azure
+
+Subscription:
+Azure for Students
+
+Primary Region:
+Central India
+
+Primary Administration Tool:
+Azure CLI
+
+Shell:
+Azure Cloud Shell
+
+Compute:
+Ubuntu Server 24.04 LTS
+
+Identity:
+Microsoft Entra ID
+
+Authorization:
+Azure RBAC
+
+Workload Identity:
+System-Assigned Managed Identity
+
+Storage:
+Azure Blob Storage + Azure Files
+
+Monitoring:
+Azure Monitor
+
+Documentation:
+GitHub Repository
+```
+
+---
+
+# Next Phase
+
+With Days 01–10 completed, the project can continue into more advanced Azure Administrator scenarios such as:
+
+* Azure Backup
+* Recovery Services
+* VM backup and restore
+* Advanced networking
+* Network troubleshooting
+* Azure Monitor and Log Analytics
+* Alerts and action groups
+* Azure Automation
+* Cost management
+* Governance
+* Policy
+* Resource locks
+* Advanced security
+* Infrastructure automation
+
+---
+
+# Final Status
+
+**Azure CLI Infrastructure Project — Day 01 to Day 10 Completed Successfully ✅**
+
+The project now demonstrates practical Azure administration across:
+
+```text
+Resource Management
+        +
+Networking
+        +
+Compute
+        +
+Linux
+        +
+Storage
+        +
+Identity
+        +
+RBAC
+        +
+Managed Identity
+        +
+Monitoring
+        +
+Security
+        +
+Troubleshooting
 ```

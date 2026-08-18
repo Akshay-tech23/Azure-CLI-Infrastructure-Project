@@ -1050,8 +1050,7 @@ Azure-CLI-Infrastructure-Project/
 │       ├── Notes.md
 │       └── Resource.md
 │
-├── scripts/
-│   └── azure-cli/
+├─ azure-cli/
 │       ├── Day-01.sh
 │       ├── Day-02.sh
 │       ├── Day-03.sh
